@@ -1,14 +1,21 @@
 import { roll } from "./roll";
 import { select } from "./select";
 
+/**
+ * Flip between a random consonant and vowel to form an otherworldly name
+ */
 const consonants = [
   "w",
   "r",
   "t",
+  "th",
   "y",
   "p",
+  "ph",
   "s",
+  "st",
   "d",
+  "dr",
   "f",
   "g",
   "h",
@@ -18,26 +25,29 @@ const consonants = [
   "z",
   "x",
   "c",
+  "ch",
   "v",
   "b",
+  "br",
   "n",
   "m",
+  "mn",
 ];
 
-const vowels = ["e", "ee", "u", "i", "o", "oo", "a", "ae"];
+const vowels = ["e", "ee", "u", "i", "o", "oo", "a"];
 
 export const randName = () => {
   const numLetters = roll(3).d(3);
 
   // Start off the name
-  let name = select(consonants).toUpperCase();
-  let isVowel = true;
+  let name = "";
+  let isVowel = roll(1).d(2) == 1;
 
   for (let i = 0; i < numLetters; i++) {
     name = name + select(isVowel ? vowels : consonants);
     isVowel = !isVowel;
   }
-  return name + ", " + select(epithets);
+  return name[0].toUpperCase() + name.slice(1) + ", " + select(epithets);
 };
 
 /**
@@ -158,7 +168,6 @@ const epithets = [
   "the Blight That Breathes",
   "the Filth That Walks",
   "the Weeping Plague",
-  "the Mold That Thinks",
   "the Lord of Oozing Wounds",
   "the Foul Lament",
   "the Pestilent One",
