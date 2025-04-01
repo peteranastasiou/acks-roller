@@ -1,4 +1,3 @@
-import { DemonStats } from "./cacodemon/demon";
 import { Rank, rankStrings } from "./cacodemon/rank";
 import { formatDemonIntoRows, rollDemon } from "./cacodemon/rollDemon";
 import "./style.css";
