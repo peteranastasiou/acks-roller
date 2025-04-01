@@ -1,1 +1,30 @@
-<h1>It Works</h1>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cacodemon roller</title>
+  </head>
+  <body>
+    <div x-data="cacodemon">
+      <h1>
+        ACKS II Cacodemon Roller
+      </h1>
+      <div>
+        <button id="generate" type="button" @click="generate()">Generate</button>
+      </div>
+      <div>
+        <table>
+          <template x-for="row in rows">
+            <tr>
+              <td x-text="row[0]" class="stat-column"></td>
+              <td x-text="row[1]"></td>
+            </tr>
+          </template>
+        </table>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
