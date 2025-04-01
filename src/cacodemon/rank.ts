@@ -41,7 +41,7 @@ export const getRankStats = (rank: Rank): RankStats => {
   const hasSpeech = roll(1).d(100) <= chanceOfSpeech;
   return {
     ac: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12][rank],
-    hd: [2, 4, 6, 8, 10, 12, 14, 16, 18][rank],
+    hd: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20][rank],
     save: ["F2", "F4", "F6", "F8", "F10", "F12", "F14", "F16", "F18", "F20"][
       rank
     ],

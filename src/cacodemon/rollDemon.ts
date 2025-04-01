@@ -2,7 +2,7 @@ import { randName } from "../random/randName";
 import { roll } from "../random/roll";
 import { select } from "../random/select";
 import { bodyFormDescription, bodyForms, getBodyFormStats } from "./bodyForm";
-import { DemonStats } from "./demon";
+import { DemonStats, Size, sizeStrings } from "./demon";
 import { getRankStats, Rank, rankStrings } from "./rank";
 import { rollSpecialAbility } from "./specialAbilities";
 
@@ -18,7 +18,11 @@ export const rollDemon = (rank: Rank): DemonStats => {
     winged,
     ...getRankStats(rank),
     ...getBodyFormStats(bodyForm, winged),
+
+    // Some initial defaults, overwritten following
     mass: 0,
+    height: 0,
+    size: Size.MAN,
     carryingCap: 0,
     isSpellCaster: false,
     specialAbilities: [],
@@ -27,8 +31,29 @@ export const rollDemon = (rank: Rank): DemonStats => {
   // Update AC to include modifier
   stats.ac = stats.ac + stats.acModifier;
 
-  stats.mass = (stats.hd * 10)**stats.bme;
-  stats.carryingCap = stats.mass * stats.ccf;
+  // Calculate mass and size
+  stats.mass = Math.round((stats.hd * 10)**stats.bme);
+  stats.carryingCap = Math.round(stats.mass * stats.ccf);
+  if( stats.mass <= 35 ){
+    stats.size = Size.SMALL;
+    stats.height = roll(1).d(2);
+  } else if (stats.mass <=400) {
+    stats.size = Size.MAN;
+    stats.height = 2 + roll(1).d(6);
+  }else if (stats.mass <=2000) {
+    stats.size = Size.LARGE;
+    stats.height = 8 + roll(1).d(4);
+  }else if (stats.mass <=8000) {
+    stats.size = Size.HUGE;
+    stats.height = 12 + roll(1).d(8);
+  }else if (stats.mass <=32000) {
+    stats.size = Size.GIGANTIC;
+    stats.height = 20 + roll(1).d(12);
+  }else {
+    stats.size = Size.COLOSSAL;
+    stats.height = 32 + roll(1).d(8);
+  }
+    
 
   // Spellcaster if hasSpeech or special abilities include spell-like-ability or spellcaster
   stats.isSpellCaster = stats.hasSpeech;
@@ -103,6 +128,10 @@ export const formatDemonIntoRows = (stats: DemonStats): [string, string][] => {
   );
   push("BME", stats.bme);
   push("CCF", stats.ccf);
+  push("Mass (pounds)", stats.mass);
+  push("Size", sizeStrings[stats.size]);
+  push("Height or Length (feet)", stats.height);
+  push("Carrying Capacity", stats.carryingCap);
   push("Num Attacks", stats.attacks.length);
   for (const atk of stats.attacks) {
     push(`${atk.qty} ${atk.name} Attack`, atk.roll + " " + atk.damageType);
