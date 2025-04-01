@@ -194,4 +194,4 @@ const epithets = [
   "the Slobbering Maw",
   "the Wretched Filth",
   "the Prince of Maggots",
-]
+];

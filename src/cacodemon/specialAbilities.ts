@@ -31,7 +31,7 @@ const damageTypes = [
 
 export function rollSpecialAbility(stats: DemonStats): SpecialAbility {
   let r = roll(1).d(100);
-  if (roll(1).d(2)===1) r = 93;
+  if (roll(1).d(2) === 1) r = 93;
 
   switch (r) {
     case 1:
@@ -222,10 +222,22 @@ man-sized, 2d8 if large, 2d10 if huge, 2d12 if gigantic, and 2d20 if colossal.`,
         ["all extraordinary damage", 1, "1"],
         ["all physical damage", 1, "1"],
         ["all energy damage", 1, "1"],
-        [`6 damage types: ${selectMany(6, damageTypes, {unique: true}).join(", ")}`, 1, "1"],
-        [`3 damage types: ${selectMany(3, damageTypes, {unique: true}).join(", ")}`, 1 / 2, "1/2"],
+        [
+          `6 damage types: ${selectMany(6, damageTypes, { unique: true }).join(", ")}`,
+          1,
+          "1",
+        ],
+        [
+          `3 damage types: ${selectMany(3, damageTypes, { unique: true }).join(", ")}`,
+          1 / 2,
+          "1/2",
+        ],
         ["all mundane physical damage", 1 / 2, "1/2"],
-        [`3 mundane damage types: ${selectMany(3, damageTypes, {unique: true}).join(", ")}`, 1 / 4, "1/4"],
+        [
+          `3 mundane damage types: ${selectMany(3, damageTypes, { unique: true }).join(", ")}`,
+          1 / 4,
+          "1/4",
+        ],
         ["all enchantment effects", 1 / 2, "1/2"],
         ["all death effects", 1 / 2, "1/2"],
         ["all transmogrification effects", 1 / 2, "1/2"],
@@ -511,7 +523,7 @@ its HD × 1.5 [${limit}], this counts as a 1 special ability. otherwise it count
           // Apply the AC change once special ability is accepted
           console.log("AC is now", newAc);
           stats.ac = newAc;
-        }
+        },
       };
     }
     case 95:

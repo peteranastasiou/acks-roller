@@ -32,28 +32,27 @@ export const rollDemon = (rank: Rank): DemonStats => {
   stats.ac = stats.ac + stats.acModifier;
 
   // Calculate mass and size
-  stats.mass = Math.round((stats.hd * 10)**stats.bme);
+  stats.mass = Math.round((stats.hd * 10) ** stats.bme);
   stats.carryingCap = Math.round(stats.mass * stats.ccf);
-  if( stats.mass <= 35 ){
+  if (stats.mass <= 35) {
     stats.size = Size.SMALL;
     stats.height = roll(1).d(2);
-  } else if (stats.mass <=400) {
+  } else if (stats.mass <= 400) {
     stats.size = Size.MAN;
     stats.height = 2 + roll(1).d(6);
-  }else if (stats.mass <=2000) {
+  } else if (stats.mass <= 2000) {
     stats.size = Size.LARGE;
     stats.height = 8 + roll(1).d(4);
-  }else if (stats.mass <=8000) {
+  } else if (stats.mass <= 8000) {
     stats.size = Size.HUGE;
     stats.height = 12 + roll(1).d(8);
-  }else if (stats.mass <=32000) {
+  } else if (stats.mass <= 32000) {
     stats.size = Size.GIGANTIC;
     stats.height = 20 + roll(1).d(12);
-  }else {
+  } else {
     stats.size = Size.COLOSSAL;
     stats.height = 32 + roll(1).d(8);
   }
-    
 
   // Spellcaster if hasSpeech or special abilities include spell-like-ability or spellcaster
   stats.isSpellCaster = stats.hasSpeech;
@@ -80,7 +79,7 @@ export const rollDemon = (rank: Rank): DemonStats => {
     stats.specialAbilities.push(sa);
 
     // Apply any stat changes due to special ability:
-    if(sa.modifyStats) sa.modifyStats();
+    if (sa.modifyStats) sa.modifyStats();
 
     // Update whether it is a spellcaster
     if (sa.name.includes("Spell")) {
@@ -159,7 +158,7 @@ export const formatDemonIntoRows = (stats: DemonStats): [string, string][] => {
 
   push("", "");
   push(`Num Special Abilities:`, stats.numSpecialAbilities);
-  for(const sa of stats.specialAbilities) {
+  for (const sa of stats.specialAbilities) {
     push(`Special Ability: ${sa.name} (${sa.valueStr})`, sa.description);
   }
 
@@ -172,4 +171,4 @@ export const formatDemonIntoRows = (stats: DemonStats): [string, string][] => {
   if (stats.isSpellCaster) push("Caster Level", stats.casterLevel);
 
   return rows;
-}
+};

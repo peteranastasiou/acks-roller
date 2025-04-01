@@ -6,21 +6,23 @@ import Alpine from "alpinejs";
 window.Alpine = Alpine;
 
 interface AppData {
-  rows: [string, string][],
-  rankStrings: string[],
-  generate(rank: number): void,
+  rows: [string, string][];
+  rankStrings: string[];
+  generate(rank: number): void;
 }
 
-Alpine.data("cacodemon", (): AppData =>({
-  rows: [],
-  rankStrings,
+Alpine.data(
+  "cacodemon",
+  (): AppData => ({
+    rows: [],
+    rankStrings,
 
-  generate(rank: number){
-    const demon = rollDemon(rank as Rank);
-    console.log(demon);
-    this.rows = formatDemonIntoRows(demon);
-  },
-
-}));
+    generate(rank: number) {
+      const demon = rollDemon(rank as Rank);
+      console.log(demon);
+      this.rows = formatDemonIntoRows(demon);
+    },
+  }),
+);
 
 Alpine.start();

@@ -2,17 +2,18 @@ import { BodyForm, BodyFormStats } from "./bodyForm";
 import { Rank, RankStats } from "./rank";
 import { SpecialAbility } from "./specialAbilities";
 
-export type DemonStats = BodyFormStats & RankStats & {
-  rank: Rank,
-  bodyForm: BodyForm,
-  winged: boolean,
-  mass: number;
-  size: Size;
-  height: number,
-  carryingCap: number;
-  isSpellCaster: boolean;
-  specialAbilities: SpecialAbility[];
-};
+export type DemonStats = BodyFormStats &
+  RankStats & {
+    rank: Rank;
+    bodyForm: BodyForm;
+    winged: boolean;
+    mass: number;
+    size: Size;
+    height: number;
+    carryingCap: number;
+    isSpellCaster: boolean;
+    specialAbilities: SpecialAbility[];
+  };
 
 export enum Size {
   SMALL = 0,
