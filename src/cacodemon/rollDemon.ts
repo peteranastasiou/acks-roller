@@ -3,7 +3,7 @@ import { roll } from "../random/roll";
 import { select } from "../random/select";
 import { bodyFormDescription, bodyForms, getBodyFormStats } from "./bodyForm";
 import { DemonStats } from "./demon";
-import { getRankStats, Rank } from "./rank";
+import { getRankStats, Rank, rankStrings } from "./rank";
 import { rollSpecialAbility } from "./specialAbilities";
 
 export const rollDemon = (rank: Rank): [string, any][] => {
@@ -19,7 +19,7 @@ export const rollDemon = (rank: Rank): [string, any][] => {
   const bodyStats = getBodyFormStats(bodyForm, winged);
 
   push("Name", randName());
-  push("Rank", "Spawn");
+  push("Rank", rankStrings[rank]);
   push("Body Form", bodyForm);
   push("Description", description);
   push("", "");
@@ -112,7 +112,6 @@ export const rollDemon = (rank: Rank): [string, any][] => {
       break;
     }
   }
-  console.log(specialAbilitySum);
 
   // TODO - if spellcaster
   // TODO spell & usage roller - most common are enchantments such as dark whisperss incite madness, infuriate beast, inspire horror, enslave

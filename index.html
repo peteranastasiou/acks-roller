@@ -12,7 +12,12 @@
         ACKS II Cacodemon Roller
       </h1>
       <div>
-        <button id="generate" type="button" @click="generate()">Generate</button>
+        <button id="generate" type="button" @click="generate($refs.rankSelect.value)">Generate</button>
+        <select x-ref="rankSelect">
+          <template x-for="(r, index) in rankStrings">
+            <option :value="index" x-text="r"></option>
+          </template>
+        </select>
       </div>
       <div>
         <table>

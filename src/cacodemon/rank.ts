@@ -23,7 +23,7 @@ export enum Rank {
   Archfiend = 9,
 }
 
-export const rankString = [
+export const rankStrings = [
   "Spawn",
   "Imp",
   "Gremlin",
