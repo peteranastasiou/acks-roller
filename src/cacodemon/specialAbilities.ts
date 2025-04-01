@@ -1,6 +1,5 @@
 import { roll } from "../random/roll";
 import { select, selectMany } from "../random/select";
-import { BodyFormStats } from "./bodyForm";
 import { DemonStats } from "./demon";
 
 export type SpecialAbility = {
@@ -11,7 +10,8 @@ export type SpecialAbility = {
 
   // Special Abilities may alter base stats,
   // but we can't do that until after they are accepted
-  modifyBaseStats?: (baseStats: BodyFormStats) => void;
+  // so we defer the change to this function
+  modifyStats?: () => void;
 };
 
 const damageTypes = [
@@ -30,7 +30,8 @@ const damageTypes = [
 ];
 
 export function rollSpecialAbility(stats: DemonStats): SpecialAbility {
-  const r = roll(1).d(100);
+  let r = roll(1).d(100);
+  if (roll(1).d(2)===1) r = 93;
 
   switch (r) {
     case 1:
@@ -77,7 +78,7 @@ a radius of 1’ per HD, (minimum 5’) and deals 1d8 damage per round. Aura typ
       return {
         name: "Bonus Attack",
         value: 1 / 4,
-        valueStr: "1 or 1/4 (please check!)",
+        valueStr: "1 or 1/4 - ⚠️ please check!",
         description:
           `The cacodemon gains one or more bonus attacks. [` +
           select([
@@ -221,10 +222,10 @@ man-sized, 2d8 if large, 2d10 if huge, 2d12 if gigantic, and 2d20 if colossal.`,
         ["all extraordinary damage", 1, "1"],
         ["all physical damage", 1, "1"],
         ["all energy damage", 1, "1"],
-        ["any 6 damage types", 1, "1"],
-        ["any 3 damage types", 1 / 2, "1/2"],
-        ["any mundane physical damage", 1 / 2, "1/2"],
-        ["any 3 mundane damage types", 1 / 4, "1/4"],
+        [`6 damage types: ${selectMany(6, damageTypes, {unique: true}).join(", ")}`, 1, "1"],
+        [`3 damage types: ${selectMany(3, damageTypes, {unique: true}).join(", ")}`, 1 / 2, "1/2"],
+        ["all mundane physical damage", 1 / 2, "1/2"],
+        [`3 mundane damage types: ${selectMany(3, damageTypes, {unique: true}).join(", ")}`, 1 / 4, "1/4"],
         ["all enchantment effects", 1 / 2, "1/2"],
         ["all death effects", 1 / 2, "1/2"],
         ["all transmogrification effects", 1 / 2, "1/2"],
@@ -504,8 +505,13 @@ obstacle, the creature takes 1d6 mundane bludgeoning damage per 10’ he has tra
         name: "Tough",
         value: isWorthOne ? 1 : 1 / 4,
         valueStr: isWorthOne ? "1" : "1/4",
-        description: `The cacodemon is unusually tough or hardy. Its AC is increased by 1d4 points [${stats.ac} + 1d4=${r}]. If this increases its AC to more than
+        description: `The cacodemon is unusually tough or hardy. Its AC is increased by 1d4 points [${stats.ac} + 1d4:${r} = ${newAc}]. If this increases its AC to more than
 its HD × 1.5 [${limit}], this counts as a 1 special ability. otherwise it counts as 1/4 special ability.`,
+        modifyStats: () => {
+          // Apply the AC change once special ability is accepted
+          console.log("AC is now", newAc);
+          stats.ac = newAc;
+        }
       };
     }
     case 95:

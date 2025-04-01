@@ -6,81 +6,33 @@ import { DemonStats } from "./demon";
 import { getRankStats, Rank, rankStrings } from "./rank";
 import { rollSpecialAbility } from "./specialAbilities";
 
-export const rollDemon = (rank: Rank): [string, any][] => {
-  const rows: [string, any][] = [];
-  const push = (key: string, val: any) => {
-    rows.push([key, val]);
-  };
-
-  // Body form stats
+export const rollDemon = (rank: Rank): DemonStats => {
+  // Roll body form
   const bodyForm = select(bodyForms);
   const winged = roll(1).d(2) === 1;
-  const description = bodyFormDescription(bodyForm, winged);
-  const bodyStats = getBodyFormStats(bodyForm, winged);
 
-  push("Name", randName());
-  push("Rank", rankStrings[rank]);
-  push("Body Form", bodyForm);
-  push("Description", description);
-  push("", "");
-  push("Winged?", winged);
-  push(
-    "Land Speed (Combat / Running) feet/round",
-    `${bodyStats.landCombatSpeed}' / ${bodyStats.landRunningSpeed}'`,
-  );
-  if (winged) {
-    push(
-      "Flying Speed (Combat / Running) feet/round",
-      `${bodyStats.flyingCombatSpeed}' / ${bodyStats.flyingRunningSpeed}'`,
-    );
-  }
-  push(
-    "Climbing Speed (Combat / Running) feet/round",
-    `${bodyStats.climbingCombatSpeed}' / ${bodyStats.climbingRunningSpeed}'`,
-  );
-  push(
-    "Swimming Speed (Combat / Running) feet/round",
-    `${bodyStats.swimmingCombatSpeed}' / ${bodyStats.swimmingRunningSpeed}'`,
-  );
-  push("BME", bodyStats.bme);
-  push("CCF", bodyStats.ccf);
-  push("Num Attacks", bodyStats.attacks.length);
-  for (const atk of bodyStats.attacks) {
-    push(`${atk.qty} ${atk.name} Attack`, atk.roll + " " + atk.damageType);
-  }
+  // Generate base statistics from rank and body form
+  const stats: DemonStats = {
+    rank,
+    bodyForm,
+    winged,
+    ...getRankStats(rank),
+    ...getBodyFormStats(bodyForm, winged),
+    mass: 0,
+    carryingCap: 0,
+    isSpellCaster: false,
+    specialAbilities: [],
+  };
 
-  push("", "");
+  // Update AC to include modifier
+  stats.ac = stats.ac + stats.acModifier;
 
-  // Base cacodemon stuff
-  push(
-    "Resistances",
-    "Resistant to acidic, cold, electrical, fire, poisonous, and seismic damage.",
-  );
-  push("Vision", "They have lightless vision (90’)");
-  push(
-    "Telepathy",
-    "Cacodemon's possess telepathy (as the spell) allowing them to communicate with any creatures they encounter.",
-  );
-
-  // Rank stats
-  const rankStats = getRankStats(rank);
-  const stats: DemonStats = { ...rankStats, ...bodyStats };
-  stats.ac = rankStats.ac + bodyStats.acModifier;
-  push("AC", stats.ac);
-  push("HD", stats.hd + "d8");
-  push("Save", stats.save);
-  push("Morale", stats.morale);
-  push("Has Speech?", stats.hasSpeech);
-
-  // TODO mass, size, carrying cap
-
-  // TODO derive one special ability from body form
+  stats.mass = (stats.hd * 10)**stats.bme;
+  stats.carryingCap = stats.mass * stats.ccf;
 
   // Spellcaster if hasSpeech or special abilities include spell-like-ability or spellcaster
-  let isSpellCaster = stats.hasSpeech;
+  stats.isSpellCaster = stats.hasSpeech;
 
-  push("", "");
-  push(`Num Special Abilities:`, stats.numSpecialAbilities);
   let specialAbilitySum = 0;
   const specialAbilitySet = new Set();
 
@@ -100,17 +52,86 @@ export const rollDemon = (rank: Rank): [string, any][] => {
     // Accept special ability
     specialAbilitySum = newSum;
     specialAbilitySet.add(sa.name);
-    push(`Special Ability: ${sa.name} (${sa.valueStr})`, sa.description);
+    stats.specialAbilities.push(sa);
+
+    // Apply any stat changes due to special ability:
+    if(sa.modifyStats) sa.modifyStats();
 
     // Update whether it is a spellcaster
     if (sa.name.includes("Spell")) {
-      isSpellCaster = true;
+      stats.isSpellCaster = true;
     }
 
-    if (newSum === rankStats.numSpecialAbilities) {
+    if (newSum === stats.numSpecialAbilities) {
       // We are done
       break;
     }
+  }
+
+  return stats;
+};
+
+export const formatDemonIntoRows = (stats: DemonStats): [string, string][] => {
+  const rows: [string, string][] = [];
+  const push = (key: string, val: any) => {
+    rows.push([key, val]);
+  };
+
+  push("Name", randName());
+  push("Rank", rankStrings[stats.rank]);
+  push("Body Form", stats.bodyForm);
+  push("Description", bodyFormDescription(stats.bodyForm, stats.winged));
+  push("", "");
+  push("Winged?", stats.winged);
+  push(
+    "Land Speed (Combat / Running) feet/round",
+    `${stats.landCombatSpeed}' / ${stats.landRunningSpeed}'`,
+  );
+  if (stats.winged) {
+    push(
+      "Flying Speed (Combat / Running) feet/round",
+      `${stats.flyingCombatSpeed}' / ${stats.flyingRunningSpeed}'`,
+    );
+  }
+  push(
+    "Climbing Speed (Combat / Running) feet/round",
+    `${stats.climbingCombatSpeed}' / ${stats.climbingRunningSpeed}'`,
+  );
+  push(
+    "Swimming Speed (Combat / Running) feet/round",
+    `${stats.swimmingCombatSpeed}' / ${stats.swimmingRunningSpeed}'`,
+  );
+  push("BME", stats.bme);
+  push("CCF", stats.ccf);
+  push("Num Attacks", stats.attacks.length);
+  for (const atk of stats.attacks) {
+    push(`${atk.qty} ${atk.name} Attack`, atk.roll + " " + atk.damageType);
+  }
+
+  push("", "");
+
+  // Base cacodemon stuff
+  push(
+    "Resistances",
+    "Resistant to acidic, cold, electrical, fire, poisonous, and seismic damage.",
+  );
+  push("Vision", "They have lightless vision (90’)");
+  push(
+    "Telepathy",
+    "Cacodemon's possess telepathy (as the spell) allowing them to communicate with any creatures they encounter.",
+  );
+
+  // Rank stats
+  push("AC", stats.ac);
+  push("HD", stats.hd + "d8");
+  push("Save", stats.save);
+  push("Morale", stats.morale);
+  push("Has Speech?", stats.hasSpeech);
+
+  push("", "");
+  push(`Num Special Abilities:`, stats.numSpecialAbilities);
+  for(const sa of stats.specialAbilities) {
+    push(`Special Ability: ${sa.name} (${sa.valueStr})`, sa.description);
   }
 
   // TODO - if spellcaster
@@ -118,8 +139,8 @@ export const rollDemon = (rank: Rank): [string, any][] => {
 
   push("", "");
 
-  push("Is Spellcaster?", isSpellCaster);
-  if (isSpellCaster) push("Caster Level", rankStats.casterLevel);
+  push("Is Spellcaster?", stats.isSpellCaster);
+  if (stats.isSpellCaster) push("Caster Level", stats.casterLevel);
 
   return rows;
-};
+}

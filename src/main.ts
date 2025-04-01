@@ -1,14 +1,14 @@
+import { DemonStats } from "./cacodemon/demon";
 import { Rank, rankStrings } from "./cacodemon/rank";
-import { rollDemon } from "./cacodemon/rollDemon";
+import { formatDemonIntoRows, rollDemon } from "./cacodemon/rollDemon";
 import "./style.css";
 import Alpine from "alpinejs";
 
 window.Alpine = Alpine;
 
 interface AppData {
-  rows: [string, any][],
+  rows: [string, string][],
   rankStrings: string[],
-  init(): void,
   generate(rank: number): void,
 }
 
@@ -16,11 +16,10 @@ Alpine.data("cacodemon", (): AppData =>({
   rows: [],
   rankStrings,
 
-  init(){
-  },
-
   generate(rank: number){
-    this.rows = rollDemon(rank as Rank);
+    const demon = rollDemon(rank as Rank);
+    console.log(demon);
+    this.rows = formatDemonIntoRows(demon);
   },
 
 }));
