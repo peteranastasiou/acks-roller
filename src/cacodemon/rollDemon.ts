@@ -63,6 +63,8 @@ export const rollDemon = (rank: Rank): DemonStats => {
   // Number of retries before giving up:
   for (let i = 0; i < 1000; i++) {
     const sa = rollSpecialAbility(stats);
+    if (!sa) continue; // need to re-roll
+
     const newSum = specialAbilitySum + sa.value;
     if (newSum > stats.numSpecialAbilities) {
       // Went over the cap, roll again:
@@ -80,11 +82,6 @@ export const rollDemon = (rank: Rank): DemonStats => {
 
     // Apply any stat changes due to special ability:
     if (sa.modifyStats) sa.modifyStats();
-
-    // Update whether it is a spellcaster
-    if (sa.name.includes("Spell")) {
-      stats.isSpellCaster = true;
-    }
 
     if (newSum === stats.numSpecialAbilities) {
       // We are done

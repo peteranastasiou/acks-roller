@@ -1,6 +1,6 @@
 import { roll } from "../random/roll";
 import { select, selectMany } from "../random/select";
-import { DemonStats } from "./demon";
+import { DemonStats, Size } from "./demon";
 
 export type SpecialAbility = {
   name: string;
@@ -29,7 +29,7 @@ const damageTypes = [
   "Slashing",
 ];
 
-export function rollSpecialAbility(stats: DemonStats): SpecialAbility {
+export function rollSpecialAbility(stats: DemonStats): SpecialAbility | undefined {
   let r = roll(1).d(100);
   if (roll(1).d(2) === 1) r = 93;
 
@@ -429,12 +429,19 @@ mechanoreception is equal to its swimming encounter speed.`,
     }
     case 70:
     case 71:
+      if (stats.isSpellCaster) {
+        // reroll if already spellcaster
+        return undefined;
+      }
+
       return {
         name: "Spellcasting",
         value: 2,
         valueStr: "2",
-        description: `The cacodemon may cast spells as if it were a mage of the class level shown on the cacodemon Primary characteristics by rank table.
- Re-roll if the cacodemon is already able to cast spells.`, // TODO
+        description: `The cacodemon may cast spells as if it were a mage of the class level shown on the cacodemon Primary characteristics by rank table.`,
+        modifyStats: ()=> {
+          stats.isSpellCaster = true;
+        }
       };
     case 72:
     case 73:
@@ -447,6 +454,9 @@ mechanoreception is equal to its swimming encounter speed.`,
         description: `The cacodemon gains 1d4 spell-like abilities. 
 Generate the abilities as if rolling for spell scrolls or select appropriate abilities based on the cacodemon’s other powers (Judge’s choice). 
 Each spell-like ability counts as a fraction of a special ability. Multiply 2 × spell level × the usage factor (see above).`,
+        modifyStats: () => {
+          stats.isSpellCaster = true;
+        }   
       };
     case 76:
     case 77:
@@ -463,6 +473,8 @@ Each spell-like ability counts as a fraction of a special ability. Multiply 2 ×
     case 81:
     case 82:
     case 83:
+      if (stats.size < Size.HUGE) return undefined;
+
       return {
         name: "Swallow Attack",
         value: 1,
@@ -470,7 +482,7 @@ Each spell-like ability counts as a fraction of a special ability. Multiply 2 ×
         description: ` The cacodemon can swallow whole victims two size categories smaller than itself on an unmodified attack
 throw of 20. A victim that is swallowed whole takes damage equal to the cacodemon’s HD each round until the cacodemon is
 killed or the victim dies. If the cacodemon is of gigantic size, it can swallow on 19-20; if of colossal size, on 18-20. If the cacodemon
-is not at least huge size, re-roll`, // TODO
+is not at least huge size, re-roll`,
       };
     case 84:
     case 85:
@@ -495,6 +507,8 @@ cacodemon’s HD or less falter even if the save succeeds.`,
     case 89:
     case 90:
     case 91:
+      if (stats.size < Size.HUGE) return undefined;
+
       return {
         name: "Topple and Fling",
         value: 1 / 2,
@@ -502,7 +516,7 @@ cacodemon’s HD or less falter even if the save succeeds.`,
         description: `When the cacodemon hits with its primary attack, it can topple and fling creatures at least one size
 category smaller than itself. The creature struck must make a size-adjusted Paralysis saving throw. If the save fails, the creature is
 knocked prone and forced back a number of feet equal to the damage dealt. If this would push the creature into a wall or other
-obstacle, the creature takes 1d6 mundane bludgeoning damage per 10’ he has traveled. If the cacodemon is not at least huge sized, re-roll`, // TODO
+obstacle, the creature takes 1d6 mundane bludgeoning damage per 10’ he has traveled. If the cacodemon is not at least huge sized, re-roll`,
       };
     case 92:
     case 93:
@@ -529,16 +543,20 @@ its HD × 1.5 [${limit}], this counts as a 1 special ability. otherwise it count
     case 95:
     case 96:
     case 97:
+      if (stats.size < Size.LARGE) return undefined;
+
       return {
         name: "Trample",
         value: 1 / 4,
         valueStr: "1/4",
         description: `The cacodemon gains a trample attack which it may use in lieu of its normal attack sequence. The trample attack
 should inflict an average of 2 hp of mundane bludgeoning damage per HD the cacodemon possesses. The cacodemon gains a +4 bonus to attack
-targets smaller than itself and can force back such creatures. If the cacodemon is not at least large sized, re-roll`, // TODO
+targets smaller than itself and can force back such creatures. If the cacodemon is not at least large sized, re-roll`,
       };
     case 98:
     case 99:
+      if (stats.size < Size.LARGE) return undefined;
+
       return {
         name: "Vicious Attack",
         value: 1 / 2,
@@ -546,7 +564,7 @@ targets smaller than itself and can force back such creatures. If the cacodemon 
         description: `The cacodemon has a vicious attack. on an unmodified attack throw of 20, the creature struck by the
 attack must make a death save. If the save succeeds, the creature suffers double damage. If the save fails, the creature suffers triple
 damage and has a limb broken. If the cacodemon is of gigantic size, it can dismember on 19-20; if of colossal size, on 18-20. If the
-cacodemon is not at least large sized, re-roll`, // TODO
+cacodemon is not at least large sized, re-roll`,
       };
     case 100:
     default:
