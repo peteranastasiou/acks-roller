@@ -13,6 +13,7 @@ export const rollDemon = (rank: Rank): DemonStats => {
 
   // Generate base statistics from rank and body form
   const stats: DemonStats = {
+    name: randName(),
     rank,
     bodyForm,
     winged,
@@ -98,7 +99,7 @@ export const formatDemonIntoRows = (stats: DemonStats): [string, string][] => {
     rows.push([key, val]);
   };
 
-  push("Name", randName());
+  push("Name", stats.name);
   push("Rank", rankStrings[stats.rank]);
   push("Body Form", stats.bodyForm);
   push("Description", bodyFormDescription(stats.bodyForm, stats.winged));

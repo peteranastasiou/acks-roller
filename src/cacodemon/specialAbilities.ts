@@ -455,8 +455,8 @@ mechanoreception is equal to its swimming encounter speed.`,
 Generate the abilities as if rolling for spell scrolls or select appropriate abilities based on the cacodemon’s other powers (Judge’s choice). 
 Each spell-like ability counts as a fraction of a special ability. Multiply 2 × spell level × the usage factor (see above).`,
         modifyStats: () => {
-          stats.isSpellCaster = true;
-        }   
+          // TODO check does this mean we should set isSpellCaster or are spell-like abilities different?
+        }
       };
     case 76:
     case 77:
