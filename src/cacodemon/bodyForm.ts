@@ -37,6 +37,17 @@ export type BodyFormStats = {
   attacks: Attack[];
 };
 
+/**
+ * Cast a string to body form or undefined if invalid
+ */
+export const toBodyForm = (body: string): BodyForm | undefined => {
+  const bodyForm = body as BodyForm;
+  return bodyForms.includes(bodyForm) ? bodyForm : undefined;
+};
+
+/**
+ * Generate body form description
+ */
 export const bodyFormDescription = (b: BodyForm, winged: boolean): string => {
   switch (b) {
     case "Arachnine":

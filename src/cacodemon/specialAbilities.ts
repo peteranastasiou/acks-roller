@@ -29,7 +29,9 @@ const damageTypes = [
   "Slashing",
 ];
 
-export function rollSpecialAbility(stats: DemonStats): SpecialAbility | undefined {
+export function rollSpecialAbility(
+  stats: DemonStats,
+): SpecialAbility | undefined {
   let r = roll(1).d(100);
   if (roll(1).d(2) === 1) r = 93;
 
@@ -439,9 +441,9 @@ mechanoreception is equal to its swimming encounter speed.`,
         value: 2,
         valueStr: "2",
         description: `The cacodemon may cast spells as if it were a mage of the class level shown on the cacodemon Primary characteristics by rank table.`,
-        modifyStats: ()=> {
+        modifyStats: () => {
           stats.isSpellCaster = true;
-        }
+        },
       };
     case 72:
     case 73:
@@ -456,7 +458,7 @@ Generate the abilities as if rolling for spell scrolls or select appropriate abi
 Each spell-like ability counts as a fraction of a special ability. Multiply 2 × spell level × the usage factor (see above).`,
         modifyStats: () => {
           // TODO check does this mean we should set isSpellCaster or are spell-like abilities different?
-        }
+        },
       };
     case 76:
     case 77:

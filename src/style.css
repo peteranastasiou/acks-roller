@@ -29,6 +29,14 @@ body {
   min-height: 100vh;
 }
 
+h2 {
+  margin-top: 0px;
+}
+
+h3 {
+  margin: 20px 0px 0px 14px;
+}
+
 table {
   border-collapse: collapse;
   margin-top: 15px;
@@ -76,10 +84,21 @@ h1 {
   color: #888;
 }
 
+.padded-input {
+  padding: 0.35em 0.6em;
+  margin: 0em 0.15em;
+}
+
+select {
+  border-radius: 8px;
+  border: 1px solid gray;
+  font-size: 1em;
+  font-family: inherit;
+}
+
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  border: 1px solid gray;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;

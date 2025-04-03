@@ -1,14 +1,19 @@
 import { randName } from "../random/randName";
 import { roll } from "../random/roll";
 import { select } from "../random/select";
-import { bodyFormDescription, bodyForms, getBodyFormStats } from "./bodyForm";
+import {
+  BodyForm,
+  bodyFormDescription,
+  bodyForms,
+  getBodyFormStats,
+} from "./bodyForm";
 import { DemonStats, Size, sizeStrings } from "./demon";
 import { getRankStats, Rank, rankStrings } from "./rank";
 import { rollSpecialAbility } from "./specialAbilities";
 
-export const rollDemon = (rank: Rank): DemonStats => {
-  // Roll body form
-  const bodyForm = select(bodyForms);
+export const rollDemon = (rank: Rank, body?: BodyForm): DemonStats => {
+  // Roll body form if not provided
+  const bodyForm: BodyForm = body || select(bodyForms);
   const winged = roll(1).d(2) === 1;
 
   // Generate base statistics from rank and body form
@@ -99,7 +104,6 @@ export const formatDemonIntoRows = (stats: DemonStats): [string, string][] => {
     rows.push([key, val]);
   };
 
-  push("Name", stats.name);
   push("Rank", rankStrings[stats.rank]);
   push("Body Form", stats.bodyForm);
   push("Description", bodyFormDescription(stats.bodyForm, stats.winged));
