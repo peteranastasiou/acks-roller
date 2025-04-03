@@ -13,10 +13,9 @@ interface AppData {
   rows: [string, string][];
   rankOptions: string[];
   bodyOptions: string[];
-  init(): void;
-  generate(rank: number, body: string): void;
-  saveDemon(): void;
-  regenerateName(): void;
+
+  // Allow any additional properties
+  [key: string]: any;
 }
 
 Alpine.data(
