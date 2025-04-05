@@ -9,6 +9,7 @@ import {
 } from "./bodyForm";
 import { DemonStats, Size, sizeStrings } from "./demon";
 import { getRankStats, Rank, rankStrings } from "./rank";
+import { rollCacodemonSpells } from "./rollSpell";
 import { rollSpecialAbility } from "./specialAbilities";
 
 export const rollDemon = (rank: Rank, body?: BodyForm): DemonStats => {
@@ -95,6 +96,12 @@ export const rollDemon = (rank: Rank, body?: BodyForm): DemonStats => {
     }
   }
 
+  // Roll spells
+  if( stats.isSpellCaster) {
+    stats.knownSpells = rollCacodemonSpells(rank);
+  }
+  
+
   return stats;
 };
 
@@ -171,6 +178,10 @@ export const formatDemonIntoRows = (stats: DemonStats): [string, string][] => {
 
   push("Is Spellcaster?", stats.isSpellCaster);
   if (stats.isSpellCaster) push("Caster Level", stats.casterLevel);
+
+  stats.knownSpells?.forEach((spell) => {
+    push(`Known L${spell.level} Spell`, spell.name);
+  })
 
   return rows;
 };

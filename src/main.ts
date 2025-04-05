@@ -37,9 +37,12 @@ Alpine.data(
       }
     },
 
-    generate(rank: number, body: string) {
+    generate(rankStr: string, body: string) {
+      // Naiive cast to Rank
+      const rank = Number(rankStr) as Rank;
+
       // Roll a new demon and store it in the URL
-      this.demon = rollDemon(rank as Rank, toBodyForm(body));
+      this.demon = rollDemon(rank, toBodyForm(body));
       this.saveDemon();
 
       // Format the table

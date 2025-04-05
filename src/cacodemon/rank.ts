@@ -36,6 +36,9 @@ export const rankStrings = [
   "Archfiend",
 ];
 
+/**
+ * Get statistics based on rank
+ */
 export const getRankStats = (rank: Rank): RankStats => {
   const chanceOfSpeech = [1, 2, 5, 10, 20, 35, 50, 75, 100, 100][rank];
   const hasSpeech = roll(1).d(100) <= chanceOfSpeech;
