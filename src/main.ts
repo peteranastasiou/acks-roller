@@ -10,7 +10,7 @@ window.Alpine = Alpine;
 
 interface AppData {
   demon?: DemonStats;
-  rows: [string, string][];
+  rows: string[][];
   rankOptions: string[];
   bodyOptions: string[];
 

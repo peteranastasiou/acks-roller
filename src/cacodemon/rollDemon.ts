@@ -1,6 +1,7 @@
 import { randName } from "../random/randName";
 import { roll } from "../random/roll";
 import { select } from "../random/select";
+import { format8Fraction } from "../util/fractions";
 import {
   BodyForm,
   bodyFormDescription,
@@ -110,10 +111,10 @@ export const rollDemon = (rank: Rank, body?: BodyForm): DemonStats => {
   return stats;
 };
 
-export const formatDemonIntoRows = (stats: DemonStats): [string, string][] => {
-  const rows: [string, string][] = [];
-  const push = (key: string, val: any) => {
-    rows.push([key, val]);
+export const formatDemonIntoRows = (stats: DemonStats): string[][] => {
+  const rows: string[][] = [];
+  const push = (key: string, val: any, opt?: any) => {
+    rows.push([key, val, opt || ""]);
   };
 
   push("Rank", rankStrings[stats.rank]);
@@ -173,15 +174,20 @@ export const formatDemonIntoRows = (stats: DemonStats): [string, string][] => {
   push("", "");
   push(`Num Special Abilities:`, stats.maxSpecialAbilities);
   for (const sa of stats.specialAbilities) {
-    push(`Special Ability: ${sa.name} (${sa.valueStr})`, sa.description);
+    push(
+      `Special Ability: ${sa.name}`,
+      sa.description,
+      format8Fraction(sa.value),
+    );
   }
 
   if (stats.spellLikeAbilities) {
     push("", "");
     stats.spellLikeAbilities.forEach((spellLikeAbilty) => {
       push(
-        `Spell-like Ability (${Math.ceil(1000 * spellLikeAbilty.numAbilities) / 1000})`,
+        "Spell-like Ability",
         `Cast ${spellLikeAbilty.usage}: L${spellLikeAbilty.level} ${spellLikeAbilty.name}`,
+        Math.ceil(1000 * spellLikeAbilty.numAbilities) / 1000,
       );
     });
   }
