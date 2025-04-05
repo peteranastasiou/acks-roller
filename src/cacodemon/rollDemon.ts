@@ -32,6 +32,7 @@ export const rollDemon = (rank: Rank, body?: BodyForm): DemonStats => {
     size: Size.MAN,
     carryingCap: 0,
     isSpellCaster: false,
+    numSpecialAbilities: 0,
     specialAbilities: [],
   };
 
@@ -64,7 +65,6 @@ export const rollDemon = (rank: Rank, body?: BodyForm): DemonStats => {
   // Spellcaster if hasSpeech or special abilities include spell-like-ability or spellcaster
   stats.isSpellCaster = stats.hasSpeech;
 
-  let specialAbilitySum = 0;
   const specialAbilitySet = new Set();
 
   // Number of retries before giving up:
@@ -72,9 +72,13 @@ export const rollDemon = (rank: Rank, body?: BodyForm): DemonStats => {
     const sa = rollSpecialAbility(stats);
     if (!sa) continue; // need to re-roll
 
-    const newSum = specialAbilitySum + sa.value;
-    if (newSum > stats.numSpecialAbilities) {
+    const newSum = stats.numSpecialAbilities + sa.value;
+    if (newSum > stats.maxSpecialAbilities) {
       // Went over the cap, roll again:
+      if( sa.name === "Spell-like Abilities" ) {
+        console.warn(sa);
+        console.warn(`${newSum} went over ${stats.maxSpecialAbilities}!!! This shouldn't happen`);
+      }
       continue;
     }
     if (specialAbilitySet.has(sa.name)) {
@@ -83,24 +87,23 @@ export const rollDemon = (rank: Rank, body?: BodyForm): DemonStats => {
     }
 
     // Accept special ability
-    specialAbilitySum = newSum;
+    stats.numSpecialAbilities = newSum;
     specialAbilitySet.add(sa.name);
     stats.specialAbilities.push(sa);
 
     // Apply any stat changes due to special ability:
     if (sa.modifyStats) sa.modifyStats();
 
-    if (newSum === stats.numSpecialAbilities) {
+    if (newSum === stats.maxSpecialAbilities) {
       // We are done
       break;
     }
   }
 
   // Roll spells
-  if( stats.isSpellCaster) {
+  if (stats.isSpellCaster) {
     stats.knownSpells = rollCacodemonSpells(rank);
   }
-  
 
   return stats;
 };
@@ -166,13 +169,20 @@ export const formatDemonIntoRows = (stats: DemonStats): [string, string][] => {
   push("Has Speech?", stats.hasSpeech);
 
   push("", "");
-  push(`Num Special Abilities:`, stats.numSpecialAbilities);
+  push(`Num Special Abilities:`, stats.maxSpecialAbilities);
   for (const sa of stats.specialAbilities) {
     push(`Special Ability: ${sa.name} (${sa.valueStr})`, sa.description);
   }
 
-  // TODO - if spellcaster
-  // TODO spell & usage roller - most common are enchantments such as dark whisperss incite madness, infuriate beast, inspire horror, enslave
+  if (stats.spellLikeAbilities) {
+    push("", "");
+    stats.spellLikeAbilities.forEach((spellLikeAbilty) => {
+      push(
+        `Spell-like Ability (${Math.ceil(1000*spellLikeAbilty.numAbilities)/1000})`,
+        `Cast ${spellLikeAbilty.usage}: L${spellLikeAbilty.level} ${spellLikeAbilty.name}`,
+      );
+    });
+  }
 
   push("", "");
 
@@ -181,7 +191,7 @@ export const formatDemonIntoRows = (stats: DemonStats): [string, string][] => {
 
   stats.knownSpells?.forEach((spell) => {
     push(`Known L${spell.level} Spell`, spell.name);
-  })
+  });
 
   return rows;
 };

@@ -1,6 +1,6 @@
 import { BodyForm, BodyFormStats } from "./bodyForm";
 import { Rank, RankStats } from "./rank";
-import { Spell } from "./rollSpell";
+import { Spell, SpellLikeAbility } from "./rollSpell";
 import { SpecialAbility } from "./specialAbilities";
 
 export type DemonStats = BodyFormStats &
@@ -14,8 +14,10 @@ export type DemonStats = BodyFormStats &
     height: number;
     carryingCap: number;
     isSpellCaster: boolean;
+    numSpecialAbilities: number; // Possibly fractional "number" of abilities
     specialAbilities: SpecialAbility[];
     knownSpells?: Spell[];
+    spellLikeAbilities?: SpellLikeAbility[];
   };
 
 export enum Size {

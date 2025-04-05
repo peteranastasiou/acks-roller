@@ -5,7 +5,7 @@ export type RankStats = {
   hd: number;
   save: string;
   morale: number;
-  numSpecialAbilities: number;
+  maxSpecialAbilities: number;
   hasSpeech: boolean;
   casterLevel: number;
 };
@@ -49,7 +49,7 @@ export const getRankStats = (rank: Rank): RankStats => {
       rank
     ],
     morale: [0, 0, 0, 0, 1, 1, 1, 2, 2, 3][rank],
-    numSpecialAbilities: [2, 2, 2, 2, 3, 3, 3, 4, 4, 5][rank],
+    maxSpecialAbilities: [2, 2, 2, 2, 3, 3, 3, 4, 4, 5][rank],
     hasSpeech,
     casterLevel: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20][rank],
   };
