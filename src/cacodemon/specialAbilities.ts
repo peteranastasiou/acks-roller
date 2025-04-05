@@ -458,7 +458,7 @@ mechanoreception is equal to its swimming encounter speed.`,
       return {
         name: "Spell-like Abilities",
         value: numAbilities,
-        valueStr: `${8*numAbilities}/8`,
+        valueStr: `${Math.ceil(1000 * numAbilities) / 1000}`,
         description: `The cacodemon gains spell-like abilities`,
         modifyStats: () => {
           stats.spellLikeAbilities = spellLikeAbilities;
