@@ -75,9 +75,11 @@ export const rollDemon = (rank: Rank, body?: BodyForm): DemonStats => {
     const newSum = stats.numSpecialAbilities + sa.value;
     if (newSum > stats.maxSpecialAbilities) {
       // Went over the cap, roll again:
-      if( sa.name === "Spell-like Abilities" ) {
+      if (sa.name === "Spell-like Abilities") {
         console.warn(sa);
-        console.warn(`${newSum} went over ${stats.maxSpecialAbilities}!!! This shouldn't happen`);
+        console.warn(
+          `${newSum} went over ${stats.maxSpecialAbilities}!!! This shouldn't happen`,
+        );
       }
       continue;
     }
@@ -178,7 +180,7 @@ export const formatDemonIntoRows = (stats: DemonStats): [string, string][] => {
     push("", "");
     stats.spellLikeAbilities.forEach((spellLikeAbilty) => {
       push(
-        `Spell-like Ability (${Math.ceil(1000*spellLikeAbilty.numAbilities)/1000})`,
+        `Spell-like Ability (${Math.ceil(1000 * spellLikeAbilty.numAbilities) / 1000})`,
         `Cast ${spellLikeAbilty.usage}: L${spellLikeAbilty.level} ${spellLikeAbilty.name}`,
       );
     });

@@ -1,5 +1,6 @@
 import { roll } from "../random/roll";
 import { select, selectMany } from "../random/select";
+import { format8Fraction } from "../util/fractions";
 import { DemonStats, Size } from "./demon";
 import { rollSpellLikeAbilities } from "./rollSpell";
 
@@ -370,38 +371,36 @@ of two particular types (usually fire and acid): [${types}]. The amount regenera
     case 65:
     case 66:
     case 67: {
-      const opts: (() => [string, number, string])[] = [
-        () => ["all mundane damage", 1 / 2, "1/2"],
-        () => ["all extraordinary damage", 1 / 2, "1/2"],
-        () => ["all physical damage", 1 / 2, "1/2"],
-        () => ["all energy damage", 1 / 2, "1/2"],
+      const opts: (() => [string, number])[] = [
+        () => ["all mundane damage", 1 / 2],
+        () => ["all extraordinary damage", 1 / 2],
+        () => ["all physical damage", 1 / 2],
+        () => ["all energy damage", 1 / 2],
         () => [
           `any damage types: [${selectMany(6, damageTypes, { unique: true }).join(", ")}]`,
-          1 / 2,
-          "1/2",
+          1 / 2
         ],
         () => [
           `any damage types: [${selectMany(3, damageTypes, { unique: true }).join(", ")}]`,
           1 / 4,
-          "1/4",
         ],
-        () => ["all mundane physical damage types", 1 / 4, "1/4"],
+        () => ["all mundane physical damage types", 1 / 4],
         () => [
           `mundane damage types: [${selectMany(3, damageTypes, { unique: true }).join(", ")}]`,
           1 / 8,
-          "1/8",
         ],
-        () => ["all enchantment effects", 1 / 4, "1/4"],
-        () => ["all death effects", 1 / 4, "1/4"],
-        () => ["all transmogrification effects", 1 / 4, "1/4"],
+        () => ["all enchantment effects", 1 / 4],
+        () => ["all death effects", 1 / 4],
+        () => ["all transmogrification effects", 1 / 4],
       ];
-      const d1: [string, number, string] = select(opts)();
-      const d2: [string, number, string] = select(opts)();
+      const d1: [string, number] = select(opts)();
+      const d2: [string, number] = select(opts)();
+      const value = d1[1] + d2[1];
 
       return {
         name: "Resistance",
-        value: d1[1] + d2[1],
-        valueStr: d1[2] + " + " + d2[2],
+        value,
+        valueStr: format8Fraction(value),
         description: `The cacodemon gains resistances: [${d1[0]}, ${d2[0]}].  If the same effect is rolled twice, the cacodemon becomes immune (as above).
 re-roll if the cacodemon is already immune to the effect.`, // TODO
       };
@@ -458,7 +457,7 @@ mechanoreception is equal to its swimming encounter speed.`,
       return {
         name: "Spell-like Abilities",
         value: numAbilities,
-        valueStr: `${Math.ceil(1000 * numAbilities) / 1000}`,
+        valueStr: format8Fraction(numAbilities),
         description: `The cacodemon gains spell-like abilities`,
         modifyStats: () => {
           stats.spellLikeAbilities = spellLikeAbilities;
