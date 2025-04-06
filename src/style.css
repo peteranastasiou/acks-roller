@@ -44,7 +44,8 @@ h3 {
 
 table {
   border-collapse: collapse;
-  margin-top: 15px;
+  margin-top: 5px;
+  margin-bottom: 15px;
 }
 
 td {
@@ -59,6 +60,10 @@ td {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+h4 {
+  margin-bottom: 0px;
 }
 
 #app {

@@ -160,6 +160,9 @@ the save is at -2.`,
         description: `The cacodemon is capable of flying at the speed noted for its body form. If it already flies, it becomes capable of
 making dive attacks that deal double damage. If a dive hits a victim smaller than itself, it grabs and carries him off, unless the
 victim makes a successful size-adjusted Paralysis save. If it already has a dive attack, re-roll.`,
+        modifyStats: () => {
+          stats.flying = true;
+        }
       };
     case 24:
     case 25: {

@@ -9,6 +9,7 @@ export type DemonStats = BodyFormStats &
     rank: Rank;
     bodyForm: BodyForm;
     winged: boolean;
+    flying: boolean;
     mass: number;
     size: Size;
     height: number;
