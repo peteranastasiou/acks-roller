@@ -162,7 +162,7 @@ making dive attacks that deal double damage. If a dive hits a victim smaller tha
 victim makes a successful size-adjusted Paralysis save. If it already has a dive attack, re-roll.`,
         modifyStats: () => {
           stats.flying = true;
-        }
+        },
       };
     case 24:
     case 25: {

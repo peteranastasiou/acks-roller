@@ -124,21 +124,21 @@ export const formatDemonIntoRows = (stats: DemonStats): string[][] => {
   push("", "");
   push("Winged?", stats.winged);
   push(
-    "Land Speed (Combat / Running) feet/round",
+    "Speed (land):",
     `${stats.landCombatSpeed}' / ${stats.landRunningSpeed}'`,
   );
-  if (stats.winged) {
+  if (stats.flying) {
     push(
-      "Flying Speed (Combat / Running) feet/round",
+      "Speed (flying):",
       `${stats.flyingCombatSpeed}' / ${stats.flyingRunningSpeed}'`,
     );
   }
   push(
-    "Climbing Speed (Combat / Running) feet/round",
+    "Speed (climbing):",
     `${stats.climbingCombatSpeed}' / ${stats.climbingRunningSpeed}'`,
   );
   push(
-    "Swimming Speed (Combat / Running) feet/round",
+    "Speed (swimming):",
     `${stats.swimmingCombatSpeed}' / ${stats.swimmingRunningSpeed}'`,
   );
   push("BME", stats.bme);
@@ -155,10 +155,7 @@ export const formatDemonIntoRows = (stats: DemonStats): string[][] => {
   push("", "");
 
   // Base cacodemon stuff
-  push(
-    "Resistances",
-    "Resistant to acidic, cold, electrical, fire, poisonous, and seismic damage.",
-  );
+  push("Resistances", "Acid, cold, electrical, fire, poisonous, seismic");
   push("Vision", "They have lightless vision (90’)");
   push(
     "Telepathy",

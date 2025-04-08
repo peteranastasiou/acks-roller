@@ -57,6 +57,30 @@ td {
   font-weight: bold;
 }
 
+.collapsible {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.active,
+.collapsible:hover {
+  background-color: #555;
+}
+
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -94,9 +118,16 @@ h4 {
   color: #888;
 }
 
+.inputs-container {
+  padding-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 8px;
+}
+
 .padded-input {
   padding: 0.35em 0.6em;
-  margin: 0em 0.15em;
 }
 
 select {

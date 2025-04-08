@@ -11,7 +11,7 @@
       <h1 :class="demon ? 'shrink' : ''">
         ACKS II Cacodemon Roller
       </h1>
-      <div style="padding-bottom: 15px;">
+      <div class="inputs-container">
         <button type="button" class="padded-input" @click="generate($refs.rankSelect.value, $refs.bodySelect.value)">Generate</button>
         <select x-ref="rankSelect" class="padded-input">
           <template x-for="(r, index) in rankOptions">
@@ -19,12 +19,14 @@
           </template>
         </select>
         <span>with</span>
-        <select x-ref="bodySelect" class="padded-input" >
-          <template x-for="b in bodyOptions">
-            <option :value="b" x-text="b"></option>
-          </template>
-        </select>
-        <span>Body Form</span>
+        <div>
+          <select x-ref="bodySelect" class="padded-input" >
+            <template x-for="b in bodyOptions">
+              <option :value="b" x-text="b"></option>
+            </template>
+          </select>
+          <span>Body Form</span>
+        </div>
       </div>
       <template x-if="demon">
         <h3>
