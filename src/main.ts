@@ -32,7 +32,7 @@ Alpine.data(
       const demon = s.get("demon");
       if (demon) {
         // Restore from URL params
-        this.demon = JSON.parse(demon) as DemonStats;
+        this.demon = JSON.parse(decodeURIComponent(demon)) as DemonStats;
         this.rows = formatDemonIntoRows(this.demon);
       }
     },
@@ -53,14 +53,13 @@ Alpine.data(
       // Re-roll just the name
       if (this.demon) {
         this.demon.name = randName();
-        console.log(this.demon);
         this.saveDemon();
       }
     },
 
     saveDemon() {
       // Store demon into URL
-      const s = JSON.stringify(this.demon);
+      const s = encodeURIComponent(JSON.stringify(this.demon));
       window.history.pushState({}, "", `?demon=${s}`);
     },
   }),
