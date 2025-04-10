@@ -10,6 +10,7 @@ window.Alpine = Alpine;
 
 interface AppData {
   demon?: DemonStats;
+  defaultRank: Rank;
   rows: string[][];
   rankOptions: string[];
   bodyOptions: string[];
@@ -23,6 +24,7 @@ Alpine.data(
   (): AppData => ({
     demon: undefined,
     rows: [],
+    defaultRank: Rank.Spawn,
     rankOptions: rankStrings,
     bodyOptions: ["Random", ...bodyForms],
 
@@ -34,6 +36,9 @@ Alpine.data(
         // Restore from URL params
         this.demon = JSON.parse(decodeURIComponent(demon)) as DemonStats;
         this.rows = formatDemonIntoRows(this.demon);
+
+        // Set default select fields values from demon properties
+        this.defaultRank = this.demon.rank;
       }
     },
 

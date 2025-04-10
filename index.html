@@ -15,7 +15,7 @@
         <button type="button" class="padded-input" @click="generate($refs.rankSelect.value, $refs.bodySelect.value)">Generate</button>
         <select x-ref="rankSelect" class="padded-input">
           <template x-for="(r, index) in rankOptions">
-            <option :value="index" x-text="r"></option>
+            <option :value="index" x-text="r" :selected="defaultRank===index"></option>
           </template>
         </select>
         <span>with</span>
