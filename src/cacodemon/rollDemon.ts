@@ -26,7 +26,7 @@ export const rollDemon = (rank: Rank, body?: BodyForm): DemonStats => {
     winged,
     flying: winged,
     ...getRankStats(rank),
-    ...getBodyFormStats(bodyForm, winged),
+    ...getBodyFormStats(bodyForm, rank, winged),
 
     // Some initial defaults, overwritten following
     mass: 0,
