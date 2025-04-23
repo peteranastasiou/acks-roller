@@ -8,19 +8,33 @@
   </head>
   <body>
     <div x-data="cacodemon">
-      <h1 :class="demon ? 'shrink' : ''">
-        ACKS II Cacodemon Roller
-      </h1>
+      <template x-if="rollCount">
+        <div id="roll-count-overlay">
+          Powering <span x-text="rollCount"></span> demons
+        </div>
+      </template>
+
+      <h1 :class="demon ? 'shrink' : ''">ACKS II Cacodemon Roller</h1>
       <div class="inputs-container">
-        <button type="button" class="padded-input" @click="generate($refs.rankSelect.value, $refs.bodySelect.value)">Generate</button>
+        <button
+          type="button"
+          class="padded-input"
+          @click="generate($refs.rankSelect.value, $refs.bodySelect.value)"
+        >
+          Generate
+        </button>
         <select x-ref="rankSelect" class="padded-input">
           <template x-for="(r, index) in rankOptions">
-            <option :value="index" x-text="r" :selected="defaultRank===index"></option>
+            <option
+              :value="index"
+              x-text="r"
+              :selected="defaultRank===index"
+            ></option>
           </template>
         </select>
         <span>with</span>
         <div>
-          <select x-ref="bodySelect" class="padded-input" >
+          <select x-ref="bodySelect" class="padded-input">
             <template x-for="b in bodyOptions">
               <option :value="b" x-text="b"></option>
             </template>
@@ -28,11 +42,19 @@
           <span>Body Form</span>
         </div>
       </div>
+
       <template x-if="demon">
         <h3>
           <span x-text="demon?.name"></span>
           <span>
-            <button id="re-roll-name" type="button" @click="regenerateName()" title="Re-roll name">↻</button>
+            <button
+              id="re-roll-name"
+              type="button"
+              @click="regenerateName()"
+              title="Re-roll name"
+            >
+              ↻
+            </button>
           </span>
         </h3>
       </template>

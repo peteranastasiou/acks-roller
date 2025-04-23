@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "alpinejs": "^3.14.9",
+    "firebase": "^11.6.0",
     "prettier": "^3.5.3"
   }
 }

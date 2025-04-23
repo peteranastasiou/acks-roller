@@ -2,6 +2,7 @@ import { bodyForms, toBodyForm } from "./cacodemon/bodyForm";
 import { DemonStats } from "./cacodemon/demon";
 import { Rank, rankStrings } from "./cacodemon/rank";
 import { formatDemonIntoRows, rollDemon } from "./cacodemon/rollDemon";
+import { getRollCount, incrementPageViews, incrementRollCount } from "./firebase/firebase";
 import { randName } from "./random/randName";
 import "./style.css";
 import Alpine from "alpinejs";
@@ -14,6 +15,7 @@ interface AppData {
   rows: string[][];
   rankOptions: string[];
   bodyOptions: string[];
+  rollCount: number | undefined;
 
   // Allow any additional properties
   [key: string]: any;
@@ -27,6 +29,7 @@ Alpine.data(
     defaultRank: Rank.Spawn,
     rankOptions: rankStrings,
     bodyOptions: ["Random", ...bodyForms],
+    rollCount: undefined,
 
     init() {
       // Extract demon from URL params if it exists
@@ -40,6 +43,10 @@ Alpine.data(
         // Set default select fields values from demon properties
         this.defaultRank = this.demon.rank;
       }
+
+      // Stats
+      incrementPageViews();
+      this.fetchRollCounts();
     },
 
     generate(rankStr: string, body: string) {
@@ -52,6 +59,9 @@ Alpine.data(
 
       // Format the table
       this.rows = formatDemonIntoRows(this.demon);
+
+      // Record stats
+      incrementRollCount().then(this.fetchRollCounts());
     },
 
     regenerateName() {
@@ -66,6 +76,15 @@ Alpine.data(
       // Store demon into URL
       const s = encodeURIComponent(JSON.stringify(this.demon));
       window.history.pushState({}, "", `?demon=${s}`);
+    },
+
+    fetchRollCounts() {
+      // Fetch roll count from firebase
+      getRollCount().then((rollCount) => {
+        if (rollCount) {
+          this.rollCount = rollCount;
+        }
+      });
     },
   }),
 );

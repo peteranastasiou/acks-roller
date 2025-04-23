@@ -147,7 +147,10 @@ export const formatDemonIntoRows = (stats: DemonStats): string[][] => {
   push("Size", sizeStrings[stats.size]);
   push("Height or Length (feet)", stats.height);
   push("Carrying Capacity", stats.carryingCap);
-  push("Num Attacks", stats.attacks.reduce((sum, atk) => sum + atk.qty, 0));
+  push(
+    "Num Attacks",
+    stats.attacks.reduce((sum, atk) => sum + atk.qty, 0),
+  );
   for (const atk of stats.attacks) {
     push(`${atk.qty} ${atk.name} Attack`, atk.roll + " " + atk.damageType);
   }
