@@ -1,6 +1,7 @@
 import { bodyForms, toBodyForm } from "./cacodemon/bodyForm";
 import { DemonStats } from "./cacodemon/demon";
 import { Rank, rankStrings } from "./cacodemon/rank";
+import { renderDemon, renderDemonHeading, renderDemonStats, waxColorFor, getQuickStats } from './cacodemon/renderDemon';
 import { formatDemonIntoRows, rollDemon } from "./cacodemon/rollDemon";
 import { getRollCount, incrementPageViews, incrementRollCount } from "./firebase/firebase";
 import { randName } from "./random/randName";
@@ -70,6 +71,29 @@ Alpine.data(
         this.demon.name = randName();
         this.saveDemon();
       }
+    },
+    
+    getSeal() {
+      return (this.demon?.bodyForm || "?").trim().charAt(0).toUpperCase() || "?";
+    },
+
+    getSealColour() {
+      return waxColorFor(this.demon?.bodyForm || '');
+    },
+
+    getDemonStatsHtml() {
+      if (this.demon) {
+        return renderDemonStats(this.demon);
+      } else {
+        return "";
+      }
+    },
+
+    getQuickStats() {
+      if (this.demon) {
+        return getQuickStats(this.demon);
+      }
+      return "";
     },
 
     saveDemon() {

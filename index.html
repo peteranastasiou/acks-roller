@@ -16,7 +16,7 @@
       </template>
 
       <header class="masthead">
-        <h1>Cacodemonomicon</h1>
+        <h1>ACKS II Cacodemon Roller</h1>
       </header>
       <div class="inputs-container">
         <button
@@ -47,31 +47,45 @@
       </div>
 
       <template x-if="demon">
-        <h3>
-          <span x-text="demon?.name"></span>
-          <span>
-            <button
-              id="re-roll-name"
-              type="button"
-              @click="regenerateName()"
-              title="Re-roll name"
-            >
+        <article class="dossier" data-card-id="id">
+          <div class="dossier-header">
+            <button class="dossier-toggle-btn" type="button" data-id="id" aria-expanded="true" aria-label="Toggle details">
+              <span class="seal" x-text="getSeal()" :style="'background:' + getSealColour()">
+              </span>
+              <span class="header-text">
+              <h2 class="dossier-name" x-text="demon.name">
+              </h2>
+              <div class="dossier-quickstats" x-html="getQuickStats()">
+              </div>
+              </span>
+            </button>
+            <button 
+              class="roll-btn tooltip"
+              type="button" 
+              data-tooltip="Re-roll name"
+              aria-label="Re-roll name"
+              @click="regenerateName()">
               ↻
             </button>
-          </span>
-        </h3>
-      </template>
-      <div>
-        <table>
-          <template x-for="row in rows">
-            <tr>
-              <td x-text="row[0]" class="stat-column"></td>
-              <td x-text="row[1]"></td>
-              <td x-text="row[2]"></td>
-            </tr>
-          </template>
-        </table>
-      </div>
+            <button 
+              class="add-btn tooltip"
+              type="button" 
+              data-tooltip="Add to registry"
+              aria-label="Add to registry"
+              @click="addToRegistry()">
+              <span class="bookmark">⌂</span>
+            </button>
+          </div>
+          <div class="dossier-collapse expanded">
+            <div class="dossier-collapse-inner">
+              <div class="dossier-body">
+                <div x-html="getDemonStatsHtml()">
+                </div>
+              </div>
+            </div>
+          </div>
+      </article>
+    </template>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

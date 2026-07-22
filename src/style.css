@@ -37,17 +37,6 @@ h3 {
   margin: 20px 0px 0px 14px;
 }
 
-table {
-  border-collapse: collapse;
-  margin-top: 5px;
-  margin-bottom: 15px;
-}
-
-td {
-  border: solid gray 1px;
-  padding: 5px 15px;
-}
-
 .stat-column {
   font-weight: bold;
 }
@@ -416,6 +405,10 @@ body {
 }
 .dossier-toggle-btn[aria-expanded="true"] .chevron { transform: rotate(180deg); }
 
+.bookmark {
+  transform: rotate(180deg);
+}
+
 .void-btn {
   flex: 0 0 auto;
   background: none;
@@ -430,6 +423,61 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 .void-btn:hover { background-color: var(--oxblood); color: var(--parchment); }
+
+.roll-btn {
+  flex: 0 0 auto;
+  background: none;
+  border: 1px solid var(--umber);
+  color: var(--umber);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.roll-btn:hover { background-color: var(--umber); color: var(--parchment); }
+.tooltip {
+    position: relative;
+}
+
+.add-btn {
+  flex: 0 0 auto;
+  background: none;
+  border: 1px solid var(--verdigris);
+  color: var(--verdigris);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.add-btn:hover { background-color: var(--verdigris); color: var(--parchment); }
+
+.tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 80%;
+    left: -30%;
+    transform: translateX(-50%);
+    margin-bottom: 2px;
+
+    background: #333;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+
+    opacity: 0;
+    pointer-events: none;
+}
+
+.tooltip:hover::after {
+    opacity: 1;
+}
 
 .dossier-collapse {
   display: grid;
@@ -457,7 +505,7 @@ body {
 .vitals-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 0.5rem 1rem;
+  gap: 0.5rem 2rem;
   font-size: 0.92rem;
 }
 .vital {
@@ -496,8 +544,8 @@ table.dossier-table td.num, table.dossier-table th.num {
 .dash { color: var(--parchment-dim); }
 
 .ability-entry {
-  margin: 0 0 0.9rem;
-  padding-bottom: 0.9rem;
+  margin: 0 0 0.5rem;
+  padding-bottom: 0.5rem;
   border-bottom: 1px dotted var(--parchment-dim);
 }
 .ability-entry:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
