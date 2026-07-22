@@ -6,15 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cacodemon roller</title>
   </head>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <body>
-    <div x-data="cacodemon">
+    <div class="wrap" x-data="cacodemon">
       <template x-if="rollCount">
         <div id="roll-count-overlay">
           Powering <span x-text="rollCount"></span> demons
         </div>
       </template>
 
-      <h1 :class="demon ? 'shrink' : ''">ACKS II Cacodemon Roller</h1>
+      <header class="masthead">
+        <h1>Cacodemonomicon</h1>
+      </header>
       <div class="inputs-container">
         <button
           type="button"
