@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cacodemon roller</title>
   </head>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <body>
     <div class="wrap" x-data="cacodemon">
       <template x-if="rollCount">
@@ -15,36 +16,48 @@
         </div>
       </template>
 
-      <header class="masthead">
-        <h1>ACKS II Cacodemon Roller</h1>
-      </header>
-      <div class="inputs-container">
-        <button
-          type="button"
-          class="padded-input"
-          @click="generate($refs.rankSelect.value, $refs.bodySelect.value)"
-        >
-          Generate
-        </button>
-        <select x-ref="rankSelect" class="padded-input">
-          <template x-for="(r, index) in rankOptions">
-            <option
-              :value="index"
-              x-text="r"
-              :selected="defaultRank===index"
-            ></option>
-          </template>
-        </select>
-        <span>with</span>
+      <template x-if="true">
         <div>
-          <select x-ref="bodySelect" class="padded-input">
-            <template x-for="b in bodyOptions">
-              <option :value="b" x-text="b"></option>
+          <header class="masthead">
+            <h1>ACKS II Cacodemon Roller</h1>
+          </header>
+          <div class="button-bar">
+            <div class="inputs-container">
+              <button
+                type="button"
+                class="padded-input generate-btn"
+                @click="generate($refs.rankSelect.value, $refs.bodySelect.value)"
+              >
+                Summon
+              </button>
+              new
+              <select x-ref="rankSelect" class="padded-input">
+                <template x-for="(r, index) in rankOptions">
+                  <option
+                    :value="index"
+                    x-text="r"
+                    :selected="defaultRank===index"
+                  ></option>
+                </template>
+              </select>
+              <span>with</span>
+              <div>
+                <select x-ref="bodySelect" class="padded-input">
+                  <template x-for="b in bodyOptions">
+                    <option :value="b" x-text="b"></option>
+                  </template>
+                </select>
+                <span>body form</span>
+              </div>
+            </div>
+            <template x-if="demon">
+              <button class="padded-input" style="height:2rem" @click="discard()">
+              <i class="fa-solid fa-trash"></i>
+              </button>
             </template>
-          </select>
-          <span>Body Form</span>
+          </div>
         </div>
-      </div>
+      </template>
 
       <template x-if="demon">
         <article class="dossier" data-card-id="id">
@@ -68,12 +81,20 @@
               ↻
             </button>
             <button 
+              class="roll-btn tooltip"
+              type="button" 
+              data-tooltip="Edit name"
+              aria-label="Edit name"
+              @click="editName()">
+              <i class="fa-solid fa-feather"></i>
+            </button>
+            <button 
               class="add-btn tooltip"
               type="button" 
-              data-tooltip="Add to registry"
-              aria-label="Add to registry"
-              @click="addToRegistry()">
-              <span class="bookmark">⌂</span>
+              data-tooltip="Add to register"
+              aria-label="Add to register"
+              @click="addToRegister()">
+              <i class="fa-solid fa-bookmark"></i>
             </button>
           </div>
           <div class="dossier-collapse expanded">
@@ -84,8 +105,15 @@
               </div>
             </div>
           </div>
-      </article>
-    </template>
+        </article>
+      </template>
+
+      <template x-if="!demon">
+        <ul>
+          <li x-for="demon in demons" x-text="demon">
+          </li>
+        </ul>
+      </template>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

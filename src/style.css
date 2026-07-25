@@ -1,3 +1,4 @@
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -11,6 +12,31 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /**
+  Color scheme
+  */
+  --ink-black: #14110f;
+  --ink-black-2: #1b1713;
+  --parchment: #ebe0c8;
+  --parchment-dim: #d8caa8;
+  --ink-text: #2a2116;
+  --ink-text-soft: #4a3c2a;
+  --seal-gold: #b08d3e;
+  --seal-gold-bright: #cba959;
+  --oxblood: #7a2419;
+  --verdigris: #4c5d4a;
+  --slate-indigo: #3d4f66;
+  --umber: #5c3a21;
+  --plum-wax: #6b2d52;
+  --font-display: 'Cinzel', serif;
+  --font-body: 'EB Garamond', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+}
+
+[x-cloak] { 
+    display: none !important; 
 }
 
 a {
@@ -98,8 +124,14 @@ h4 {
   color: #888;
 }
 
-.inputs-container {
+.button-bar {
+  font-family: var(--font-display); 
+  display: flex;
+  justify-content: space-between;
   padding-bottom: 15px;
+}
+
+.inputs-container {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -111,15 +143,19 @@ h4 {
 }
 
 select {
-  border-radius: 8px;
-  border: 1px solid gray;
+  color: var(--parchment);
+  border-radius: 4px;
+  border: 1px solid var(--seal-gold-bright);
   font-size: 1em;
+  font-weight: 500;
   font-family: inherit;
+  background-color: #1a1a1a;
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid gray;
+  color: var(--seal-gold-bright);
+  border-radius: 4px;
+  border: 1px solid var(--seal-gold-bright);
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
@@ -127,25 +163,9 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
-}
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }
 
 /*
@@ -153,26 +173,6 @@ button:focus-visible {
 From the Cacodemonomicon
 
 */
-
-:root {
-  --ink-black: #14110f;
-  --ink-black-2: #1b1713;
-  --parchment: #ebe0c8;
-  --parchment-dim: #d8caa8;
-  --ink-text: #2a2116;
-  --ink-text-soft: #4a3c2a;
-  --seal-gold: #b08d3e;
-  --seal-gold-bright: #cba959;
-  --oxblood: #7a2419;
-  --verdigris: #4c5d4a;
-  --slate-indigo: #3d4f66;
-  --umber: #5c3a21;
-  --plum-wax: #6b2d52;
-  --font-display: 'Cinzel', serif;
-  --font-body: 'EB Garamond', serif;
-  --font-mono: 'JetBrains Mono', monospace;
-}
-
 * { box-sizing: border-box; }
 
 html, body {
@@ -202,7 +202,7 @@ body {
 .masthead {
   border-bottom: 3px double var(--seal-gold);
   padding-bottom: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .masthead h1 {
@@ -405,9 +405,14 @@ body {
 }
 .dossier-toggle-btn[aria-expanded="true"] .chevron { transform: rotate(180deg); }
 
-.bookmark {
-  transform: rotate(180deg);
+.generate-btn {
+  background: var(--oxblood);
+  color: var(--parchment);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
+.generate-btn:hover { background-color: #c03826; }
 
 .void-btn {
   flex: 0 0 auto;
@@ -515,7 +520,10 @@ body {
   border-bottom: 1px dotted var(--parchment-dim);
   padding-bottom: 0.15rem;
 }
-.vital-label { color: var(--ink-text-soft); }
+.vital-label {
+  color: var(--ink-text-soft);
+  white-space: nowrap;
+}
 .vital-value { font-family: var(--font-mono); font-weight: 500; text-align: right; }
 
 table.dossier-table {

@@ -1,7 +1,7 @@
 import { bodyForms, toBodyForm } from "./cacodemon/bodyForm";
-import { DemonStats } from "./cacodemon/demon";
+import { DemonStats } from './cacodemon/demon';
 import { Rank, rankStrings } from "./cacodemon/rank";
-import { renderDemon, renderDemonHeading, renderDemonStats, waxColorFor, getQuickStats } from './cacodemon/renderDemon';
+import { renderDemonStats, waxColorFor, getQuickStats } from './cacodemon/renderDemon';
 import { formatDemonIntoRows, rollDemon } from "./cacodemon/rollDemon";
 import { getRollCount, incrementPageViews, incrementRollCount } from "./firebase/firebase";
 import { randName } from "./random/randName";
@@ -12,6 +12,7 @@ window.Alpine = Alpine;
 
 interface AppData {
   demon?: DemonStats;
+  demons: Map<string, DemonStats>;
   defaultRank: Rank;
   rows: string[][];
   rankOptions: string[];
@@ -26,11 +27,13 @@ Alpine.data(
   "cacodemon",
   (): AppData => ({
     demon: undefined,
+    demons: new Map<string, DemonStats>(),
     rows: [],
     defaultRank: Rank.Spawn,
     rankOptions: rankStrings,
     bodyOptions: ["Random", ...bodyForms],
     rollCount: undefined,
+    initialised: false,
 
     init() {
       // Extract demon from URL params if it exists
@@ -48,6 +51,8 @@ Alpine.data(
       // Stats
       incrementPageViews();
       this.fetchRollCounts();
+
+      this.initialised = true;
     },
 
     generate(rankStr: string, body: string) {
@@ -61,8 +66,10 @@ Alpine.data(
       // Format the table
       this.rows = formatDemonIntoRows(this.demon);
 
-      // Record stats
-      incrementRollCount().then(this.fetchRollCounts());
+      // Record stats (if not running locally)
+      if (!window.location.host.startsWith("localhost")) {
+        incrementRollCount().then(this.fetchRollCounts());
+      }
     },
 
     regenerateName() {
@@ -73,6 +80,24 @@ Alpine.data(
       }
     },
     
+    editName() {
+      const res = prompt("Pen a new name:", this.demon?.name);
+      if(res && this.demon) {
+        this.demon.name = res;
+        this.saveDemon();
+      }
+    },
+
+    addToRegister() {
+      if (this.demon) {
+        this.demons.set(this.demon.name, this.demon);
+      }
+
+      // TODO store to local storage
+
+      window.location.href = '/';
+    },
+
     getSeal() {
       return (this.demon?.bodyForm || "?").trim().charAt(0).toUpperCase() || "?";
     },
@@ -100,6 +125,11 @@ Alpine.data(
       // Store demon into URL
       const s = encodeURIComponent(JSON.stringify(this.demon));
       window.history.pushState({}, "", `?demon=${s}`);
+    },
+
+    discard() {
+      console.log("Discard")
+      window.location.href = '/';
     },
 
     fetchRollCounts() {
