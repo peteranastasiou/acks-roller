@@ -211,7 +211,7 @@ body {
   font-weight: 700;
   font-size: 2.1rem;
   letter-spacing: 0.03em;
-  margin: 0 0 0.4rem;
+  margin: 0 0 1.4rem;
   color: var(--seal-gold-bright);
   text-shadow: 0 1px 0 rgba(0,0,0,0.4);
 }

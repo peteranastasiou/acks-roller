@@ -23,6 +23,7 @@ interface AppData {
   rollCount: number | undefined;
   expandedIds: Set<string>;
   newDemonId: string | undefined;
+  storageMessage: string;
 
   // Allow any additional properties
   [key: string]: any;
@@ -41,6 +42,7 @@ Alpine.data(
     initialised: false,
     expandedIds: new Set([]),
     newDemonId: undefined,
+    storageMessage: "",
 
     init() {
       // Extract demon from URL params if it exists
@@ -53,6 +55,8 @@ Alpine.data(
 
         // Set default select fields values from demon properties
         this.defaultRank = this.demon.rank;
+      } else {
+        this.demon = undefined;
       }
 
       // Fetch demons from local storage
@@ -78,6 +82,14 @@ Alpine.data(
       // Stats
       incrementPageViews();
       this.fetchRollCounts();
+
+      this.storageMessage = this.hasLocalStorage() ? 
+        'Autosaving to this browser, on this device.' 
+        : 'Storage unavailable — changes last only for this session.';
+
+      window.addEventListener('popstate', () => {
+        this.init();
+      });
 
       this.initialised = true;
     },
@@ -178,15 +190,26 @@ Alpine.data(
       return "";
     },
 
+    hasLocalStorage() {
+      try {
+        const testKey = '__cacodemonomicon_test__';
+        window.localStorage.setItem(testKey, '1');
+        window.localStorage.removeItem(testKey);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    },
+
     saveDemon() {
       // Store demon into URL
       const s = encodeURIComponent(JSON.stringify(this.demon));
-      window.history.pushState({}, "", `?demon=${s}`);
+      window.history.pushState(null, "", `?demon=${s}`);
     },
 
     discard() {
       this.demon = undefined;
-      window.history.pushState({}, "", "?");
+      window.history.pushState(null, "", window.location.pathname);
     },
 
     fetchRollCounts() {

@@ -10,12 +10,14 @@
   </head>
   <body>
     <div class="wrap" x-data="cacodemon">
+      <!-- Overlay of how many demons got rolled -->
       <template x-if="rollCount">
         <div id="roll-count-overlay">
           Powering <span x-text="rollCount"></span> demons
         </div>
       </template>
 
+      <!-- Top bar -->
       <template x-if="true">
         <div>
           <header class="masthead">
@@ -61,6 +63,7 @@
         </div>
       </template>
 
+      <!-- Active demon what just got rolled -->
       <template x-if="demon">
         <article class="dossier stamp-in" data-card-id="id">
           <div class="dossier-header">
@@ -93,8 +96,8 @@
             <button 
               class="add-btn tooltip"
               type="button" 
-              data-tooltip="Add to register"
-              aria-label="Add to register"
+              data-tooltip="Add to registry"
+              aria-label="Add to registry"
               @click="addToRegister()">
               <i class="fa-solid fa-bookmark"></i>
             </button>
@@ -110,6 +113,7 @@
         </article>
       </template>
 
+      <!-- Registry of demons -->
       <template x-if="!demon">
         <div>
           <div style="display: grid; gap: 8px">
@@ -155,6 +159,14 @@
             </div>
           </template>
         </div>
+      </template>
+
+      <!-- Footnote -->
+      <template x-if="true">
+        <footer class="foot-note">
+          <p x-text="storageMessage">
+          </p>
+        </footer>
       </template>
     </div>
     <script type="module" src="/src/main.ts"></script>
