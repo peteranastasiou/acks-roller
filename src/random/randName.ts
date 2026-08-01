@@ -34,7 +34,7 @@ const consonants = [
   "mn",
 ];
 
-const vowels = ["e", "ee", "u", "i", "o", "oo", "a"];
+const vowels = ["e", "ee", "u", "i", "o", "ae", "a"];
 
 export const randName = () => {
   const numLetters = roll(3).d(3);
@@ -42,10 +42,24 @@ export const randName = () => {
   // Start off the name
   let name = "";
   let isVowel = roll(1).d(2) == 1;
+  let hasApostraphe = false;
+  let cluster = false;
 
   for (let i = 0; i < numLetters; i++) {
     name = name + select(isVowel ? vowels : consonants);
-    isVowel = !isVowel;
+
+    if (!cluster && !isVowel && roll(1).d(4) == 1) {
+      // Put two consonants back to back
+      if (!hasApostraphe && i != 0 && i != numLetters - 1 && roll(1).d(4) == 1) {
+        // Throw an apostraphe in for fun
+        name = name + "'";
+        hasApostraphe = true;
+        cluster = true;
+      }
+    } else {
+      isVowel = !isVowel;
+      cluster = false;
+    }
   }
   return name[0].toUpperCase() + name.slice(1) + ", " + select(epithets);
 };
