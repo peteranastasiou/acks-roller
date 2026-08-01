@@ -12,6 +12,7 @@ import { DemonStats, Size, sizeStrings } from "./demon";
 import { getRankStats, Rank, rankStrings } from "./rank";
 import { rollCacodemonSpells } from "./rollSpell";
 import { rollSpecialAbility } from "./specialAbilities";
+import { v4 as uuidv4 } from 'uuid';
 
 export const rollDemon = (rank: Rank, body?: BodyForm): DemonStats => {
   // Roll body form if not provided
@@ -20,6 +21,7 @@ export const rollDemon = (rank: Rank, body?: BodyForm): DemonStats => {
 
   // Generate base statistics from rank and body form
   const stats: DemonStats = {
+    id: uuidv4(),
     name: randName(),
     rank,
     bodyForm,

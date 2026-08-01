@@ -7,17 +7,22 @@ import { getRollCount, incrementPageViews, incrementRollCount } from "./firebase
 import { randName } from "./random/randName";
 import "./style.css";
 import Alpine from "alpinejs";
+import { v4 as uuidv4 } from "uuid";
+
+const LOCAL_STORAGE_KEY = "cacodemons";
 
 window.Alpine = Alpine;
 
 interface AppData {
   demon?: DemonStats;
-  demons: Map<string, DemonStats>;
+  demons: DemonStats[];
   defaultRank: Rank;
   rows: string[][];
   rankOptions: string[];
   bodyOptions: string[];
   rollCount: number | undefined;
+  expandedIds: Set<string>;
+  newDemonId: string | undefined;
 
   // Allow any additional properties
   [key: string]: any;
@@ -27,13 +32,15 @@ Alpine.data(
   "cacodemon",
   (): AppData => ({
     demon: undefined,
-    demons: new Map<string, DemonStats>(),
+    demons: [],
     rows: [],
     defaultRank: Rank.Spawn,
     rankOptions: rankStrings,
     bodyOptions: ["Random", ...bodyForms],
     rollCount: undefined,
     initialised: false,
+    expandedIds: new Set([]),
+    newDemonId: undefined,
 
     init() {
       // Extract demon from URL params if it exists
@@ -48,6 +55,26 @@ Alpine.data(
         this.defaultRank = this.demon.rank;
       }
 
+      // Fetch demons from local storage
+      console.info("Trying to load demons");
+      try {
+        const demonsStr = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (demonsStr) {
+          this.demons = JSON.parse(demonsStr);
+          console.info(`Loaded ${this.demons.length} demon(s) from local storage`);
+
+          // Ensure all demons have an ID:
+          this.demons = this.demons.map((d) => ({
+            ...d,
+            id: d.id || uuidv4(),
+          }));
+        } else {
+          console.warn("No demons in local storage");
+        }
+      } catch(e: any) {
+        console.error(e.message);
+      }
+
       // Stats
       incrementPageViews();
       this.fetchRollCounts();
@@ -55,9 +82,20 @@ Alpine.data(
       this.initialised = true;
     },
 
+    toggleExpanded(demonId: string) {
+      if (this.expandedIds.has(demonId)) {
+        this.expandedIds.delete(demonId);
+      } else {
+        this.expandedIds.add(demonId);
+      }
+    },
+
     generate(rankStr: string, body: string) {
       // Naiive cast to Rank
       const rank = Number(rankStr) as Rank;
+
+      // Spin for a bit just for the feel of it
+      // TODO
 
       // Roll a new demon and store it in the URL
       this.demon = rollDemon(rank, toBodyForm(body));
@@ -65,11 +103,6 @@ Alpine.data(
 
       // Format the table
       this.rows = formatDemonIntoRows(this.demon);
-
-      // Record stats (if not running locally)
-      if (!window.location.host.startsWith("localhost")) {
-        incrementRollCount().then(this.fetchRollCounts());
-      }
     },
 
     regenerateName() {
@@ -90,12 +123,36 @@ Alpine.data(
 
     addToRegister() {
       if (this.demon) {
-        this.demons.set(this.demon.name, this.demon);
+        this.demons = [...this.demons, this.demon];
       }
 
-      // TODO store to local storage
+      this.saveToLocalStorage();
 
-      window.location.href = '/';
+      // Record stats (if not running locally)
+      if (!window.location.host.startsWith("localhost")) {
+        incrementRollCount().then(this.fetchRollCounts());
+      }
+
+      // Now we have saved it, we can discard the active demon
+      this.discard();
+    },
+
+    removeFromRegister(demon: DemonStats) {
+      const name = demon.name;
+      const shortName = name.includes(",") ? name.slice(0, name.indexOf(",")) : name;
+
+      const shouldDelete = window.confirm(
+        `Are you sure you want to banish ${shortName} to the void, permanently removing it from your registry?`
+      );
+      if (shouldDelete) {
+        // Remove from list of demons
+        this.demons = this.demons.filter((d) => d.id != demon.id);
+        this.saveToLocalStorage();
+      }
+    },
+
+    saveToLocalStorage() {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.demons));
     },
 
     getSeal() {
@@ -128,8 +185,8 @@ Alpine.data(
     },
 
     discard() {
-      console.log("Discard")
-      window.location.href = '/';
+      this.demon = undefined;
+      window.history.pushState({}, "", "?");
     },
 
     fetchRollCounts() {

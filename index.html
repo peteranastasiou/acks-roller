@@ -20,49 +20,51 @@
         <div>
           <header class="masthead">
             <h1>ACKS II Cacodemon Roller</h1>
-          </header>
-          <div class="button-bar">
-            <div class="inputs-container">
-              <button
-                type="button"
-                class="padded-input generate-btn"
-                @click="generate($refs.rankSelect.value, $refs.bodySelect.value)"
-              >
-                Summon
-              </button>
-              new
-              <select x-ref="rankSelect" class="padded-input">
-                <template x-for="(r, index) in rankOptions">
-                  <option
-                    :value="index"
-                    x-text="r"
-                    :selected="defaultRank===index"
-                  ></option>
-                </template>
-              </select>
-              <span>with</span>
-              <div>
-                <select x-ref="bodySelect" class="padded-input">
-                  <template x-for="b in bodyOptions">
-                    <option :value="b" x-text="b"></option>
-                  </template>
-                </select>
-                <span>body form</span>
-              </div>
+            <div class="button-bar">
+              <template x-if="!demon">
+                <div class="inputs-container">
+                  <button
+                    type="button"
+                    class="padded-input generate-btn"
+                    @click="generate($refs.rankSelect.value, $refs.bodySelect.value)"
+                  >
+                    Summon
+                  </button>
+                  new
+                  <select x-ref="rankSelect" class="padded-input">
+                    <template x-for="(r, index) in rankOptions">
+                      <option
+                        :value="index"
+                        x-text="r"
+                        :selected="defaultRank===index"
+                      ></option>
+                    </template>
+                  </select>
+                  <span>with</span>
+                  <div>
+                    <select x-ref="bodySelect" class="padded-input">
+                      <template x-for="b in bodyOptions">
+                        <option :value="b" x-text="b"></option>
+                      </template>
+                    </select>
+                    <span>body form</span>
+                  </div>
+                </div>
+              </template>
+              <template x-if="demon">
+                <button class="padded-input" style="height:2rem" @click="discard()">
+                  Back to registry
+                </button>
+              </template>
             </div>
-            <template x-if="demon">
-              <button class="padded-input" style="height:2rem" @click="discard()">
-              <i class="fa-solid fa-trash"></i>
-              </button>
-            </template>
-          </div>
+          </header>
         </div>
       </template>
 
       <template x-if="demon">
-        <article class="dossier" data-card-id="id">
+        <article class="dossier stamp-in" data-card-id="id">
           <div class="dossier-header">
-            <button class="dossier-toggle-btn" type="button" data-id="id" aria-expanded="true" aria-label="Toggle details">
+            <div class="dossier-toggle-btn">
               <span class="seal" x-text="getSeal()" :style="'background:' + getSealColour()">
               </span>
               <span class="header-text">
@@ -71,7 +73,7 @@
               <div class="dossier-quickstats" x-html="getQuickStats()">
               </div>
               </span>
-            </button>
+            </div>
             <button 
               class="roll-btn tooltip"
               type="button" 
@@ -109,10 +111,50 @@
       </template>
 
       <template x-if="!demon">
-        <ul>
-          <li x-for="demon in demons" x-text="demon">
-          </li>
-        </ul>
+        <div>
+          <div style="display: grid; gap: 8px">
+            <template x-for="demon in demons">
+              <article class="dossier" data-card-id="demon.id">
+                <div class="dossier-header">
+                  <button class="dossier-toggle-btn" @click="toggleExpanded(demon.id)" type="button" data-id="id" aria-expanded="true" aria-label="Toggle details">
+                    <span class="seal" x-text="getSeal()" :style="'background:' + getSealColour()">
+                    </span>
+                    <span class="header-text">
+                    <h2 class="dossier-name" x-text="demon.name">
+                    </h2>
+                    <div class="dossier-quickstats" x-html="getQuickStats()">
+                    </div>
+                    </span>
+                  </button>
+                  <button 
+                    class="roll-btn tooltip"
+                    type="button" 
+                    data-tooltip="Banish"
+                    aria-label="Remove from register"
+                    @click="removeFromRegister(demon)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+                <template x-if="expandedIds.has(demon.id)">
+                  <div class="dossier-collapse expanded">
+                    <div class="dossier-collapse-inner">
+                      <div class="dossier-body">
+                        <div x-html="getDemonStatsHtml()">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+              </article>
+            </template>
+          </div>
+          <template x-if="demons.length == 0">
+            <div class="empty-state"> 
+              <p>The ledger stands empty.</p>
+              <p>File your first specimen using the controls above.</p>
+            </div>
+          </template>
+        </div>
       </template>
     </div>
     <script type="module" src="/src/main.ts"></script>

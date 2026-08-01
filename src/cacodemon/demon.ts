@@ -5,6 +5,7 @@ import { SpecialAbility } from "./specialAbilities";
 
 export type DemonStats = BodyFormStats &
   RankStats & {
+    id: string;
     name: string;
     rank: Rank;
     bodyForm: BodyForm;
