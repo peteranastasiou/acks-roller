@@ -1,15 +1,13 @@
 import { randName } from "../random/randName";
 import { roll } from "../random/roll";
 import { select } from "../random/select";
-import { format8Fraction } from "../util/fractions";
 import {
   BodyForm,
-  bodyFormDescription,
   bodyForms,
   getBodyFormStats,
 } from "./bodyForm";
-import { DemonStats, Size, sizeStrings } from "./demon";
-import { getRankStats, Rank, rankStrings } from "./rank";
+import { DemonStats, Size } from "./demon";
+import { getRankStats, Rank } from "./rank";
 import { rollCacodemonSpells } from "./rollSpell";
 import { rollSpecialAbility } from "./specialAbilities";
 import { v4 as uuidv4 } from 'uuid';
