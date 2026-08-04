@@ -17,11 +17,23 @@
         </div>
       </template>
 
+      <!-- Github link -->
+      <template x-if="true">
+        <div id="github-overlay">
+          <a
+          href="https://github.com/peteranastasiou/acks-roller"
+          style="color: white"
+          >
+          <i class="fa-brands fa-github"></i>
+          </a>
+        </div>
+      </template>
+
       <!-- Top bar -->
       <template x-if="true">
         <div>
           <header class="masthead">
-            <h1>ACKS II Cacodemon Roller</h1>
+            <h1>Cacodemon Roller</h1>
             <div class="button-bar">
               <template x-if="!demon">
                 <div class="inputs-container">
@@ -65,17 +77,16 @@
 
       <!-- Active demon what just got rolled -->
       <template x-if="demon">
-        <article class="dossier stamp-in" data-card-id="id">
+        <article class="dossier" :class="demon?.id == newDemonId ? 'fade-in' : ''" data-card-id="id">
           <div class="dossier-header">
             <div class="dossier-toggle-btn">
               <span class="seal" x-text="getSeal()" :style="'background:' + getSealColour()">
               </span>
               <span class="header-text">
-              <h2 class="dossier-name" x-text="demon.name">
+              <h2 class="dossier-name line" x-text="demon.name">
               </h2>
               <div class="dossier-quickstats" x-html="getQuickStats()">
               </div>
-              </span>
             </div>
             <button 
               class="roll-btn tooltip"
@@ -118,7 +129,7 @@
         <div>
           <div style="display: grid; gap: 8px">
             <template x-for="demon in demons">
-              <article class="dossier" data-card-id="demon.id">
+              <article class="dossier" :class="newDemonId == demon.id ? 'stamp-in' : ''"  data-card-id="demon.id">
                 <div class="dossier-header">
                   <button class="dossier-toggle-btn" @click="toggleExpanded(demon.id)" type="button" data-id="id" aria-expanded="true" aria-label="Toggle details">
                     <span class="seal" x-text="getSeal()" :style="'background:' + getSealColour()">
@@ -129,6 +140,16 @@
                     <div class="dossier-quickstats" x-html="getQuickStats()">
                     </div>
                     </span>
+                    <span class="chevron" :class="expandedIds.has(demon.id) ? 'flipped' : ''">▾</span>
+                    </span>
+                  </button>
+                  <button
+                    class="roll-btn tooltip"
+                    type="button" 
+                    data-tooltip="Copy a link"
+                    aria-label="Copy a link"
+                    @click="getLinkFor(demon)">
+                    <i class="fa-solid fa-share"></i>
                   </button>
                   <button 
                     class="roll-btn tooltip"

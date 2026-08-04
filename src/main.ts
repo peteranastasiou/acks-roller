@@ -1,9 +1,17 @@
 import { bodyForms, toBodyForm } from "./cacodemon/bodyForm";
-import { DemonStats } from './cacodemon/demon';
+import { DemonStats } from "./cacodemon/demon";
 import { Rank, rankStrings } from "./cacodemon/rank";
-import { renderDemonStats, waxColorFor, getQuickStats } from './cacodemon/renderDemon';
-import { formatDemonIntoRows, rollDemon } from "./cacodemon/rollDemon";
-import { getRollCount, incrementPageViews, incrementRollCount } from "./firebase/firebase";
+import {
+  renderDemonStats,
+  waxColorFor,
+  getQuickStats,
+} from "./cacodemon/renderDemon";
+import { rollDemon } from "./cacodemon/rollDemon";
+import {
+  getRollCount,
+  incrementPageViews,
+  incrementRollCount,
+} from "./firebase/firebase";
 import { randName } from "./random/randName";
 import "./style.css";
 import Alpine from "alpinejs";
@@ -17,7 +25,6 @@ interface AppData {
   demon?: DemonStats;
   demons: DemonStats[];
   defaultRank: Rank;
-  rows: string[][];
   rankOptions: string[];
   bodyOptions: string[];
   rollCount: number | undefined;
@@ -45,16 +52,25 @@ Alpine.data(
     storageMessage: "",
 
     init() {
+      console.info("INIT");
+
+      this.initialise();
+
+      window.addEventListener("popstate", () => {
+        this.initialise();
+      });
+    },
+
+    initialise() {
+      this.newDemonId = undefined;
+      this.expandedIds = new Set([]);
+
       // Extract demon from URL params if it exists
       const s = new URLSearchParams(window.location.search);
       const demon = s.get("demon");
       if (demon) {
         // Restore from URL params
         this.demon = JSON.parse(decodeURIComponent(demon)) as DemonStats;
-        this.rows = formatDemonIntoRows(this.demon);
-
-        // Set default select fields values from demon properties
-        this.defaultRank = this.demon.rank;
       } else {
         this.demon = undefined;
       }
@@ -65,17 +81,13 @@ Alpine.data(
         const demonsStr = localStorage.getItem(LOCAL_STORAGE_KEY);
         if (demonsStr) {
           this.demons = JSON.parse(demonsStr);
-          console.info(`Loaded ${this.demons.length} demon(s) from local storage`);
-
-          // Ensure all demons have an ID:
-          this.demons = this.demons.map((d) => ({
-            ...d,
-            id: d.id || uuidv4(),
-          }));
+          console.info(
+            `Loaded ${this.demons.length} demon(s) from local storage`,
+          );
         } else {
           console.warn("No demons in local storage");
         }
-      } catch(e: any) {
+      } catch (e: any) {
         console.error(e.message);
       }
 
@@ -83,13 +95,9 @@ Alpine.data(
       incrementPageViews();
       this.fetchRollCounts();
 
-      this.storageMessage = this.hasLocalStorage() ? 
-        'Autosaving to this browser, on this device.' 
-        : 'Storage unavailable — changes last only for this session.';
-
-      window.addEventListener('popstate', () => {
-        this.init();
-      });
+      this.storageMessage = this.hasLocalStorage()
+        ? "Autosaving to this browser, on this device."
+        : "Storage unavailable — changes last only for this session.";
 
       this.initialised = true;
     },
@@ -106,15 +114,18 @@ Alpine.data(
       // Naiive cast to Rank
       const rank = Number(rankStr) as Rank;
 
-      // Spin for a bit just for the feel of it
-      // TODO
+      // Clear last added demon so we don't animate it again
+      this.newDemonId = undefined;
 
       // Roll a new demon and store it in the URL
       this.demon = rollDemon(rank, toBodyForm(body));
       this.saveDemon();
 
-      // Format the table
-      this.rows = formatDemonIntoRows(this.demon);
+      // Mark it as being new
+      this.newDemonId = this.demon.id;
+
+      // Set default select fields values from demon properties
+      this.defaultRank = this.demon.rank;
     },
 
     regenerateName() {
@@ -124,10 +135,10 @@ Alpine.data(
         this.saveDemon();
       }
     },
-    
+
     editName() {
       const res = prompt("Pen a new name:", this.demon?.name);
-      if(res && this.demon) {
+      if (res && this.demon) {
         this.demon.name = res;
         this.saveDemon();
       }
@@ -135,6 +146,13 @@ Alpine.data(
 
     addToRegister() {
       if (this.demon) {
+        // Ensure it has an id:
+        this.demon.id = this.demon.id || uuidv4();
+
+        // Mark it as having just been added
+        this.newDemonId = this.demon.id;
+
+        // Append to array
         this.demons = [...this.demons, this.demon];
       }
 
@@ -151,10 +169,15 @@ Alpine.data(
 
     removeFromRegister(demon: DemonStats) {
       const name = demon.name;
-      const shortName = name.includes(",") ? name.slice(0, name.indexOf(",")) : name;
+      const shortName = name.includes(",")
+        ? name.slice(0, name.indexOf(","))
+        : name;
+
+      // Clear last added demon so we don't animate it again
+      this.newDemonId = undefined;
 
       const shouldDelete = window.confirm(
-        `Are you sure you want to banish ${shortName} to the void, permanently removing it from your registry?`
+        `Are you sure you want to banish ${shortName} to the void, permanently removing it from your registry?`,
       );
       if (shouldDelete) {
         // Remove from list of demons
@@ -164,15 +187,21 @@ Alpine.data(
     },
 
     saveToLocalStorage() {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.demons));
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.demons));
+      } catch (e: any) {
+        console.error("Failed to save");
+      }
     },
 
     getSeal() {
-      return (this.demon?.bodyForm || "?").trim().charAt(0).toUpperCase() || "?";
+      return (
+        (this.demon?.bodyForm || "?").trim().charAt(0).toUpperCase() || "?"
+      );
     },
 
     getSealColour() {
-      return waxColorFor(this.demon?.bodyForm || '');
+      return waxColorFor(this.demon?.bodyForm || "");
     },
 
     getDemonStatsHtml() {
@@ -190,10 +219,23 @@ Alpine.data(
       return "";
     },
 
+    getLinkFor(demon: DemonStats) {
+      const demonWithNewId = { ...demon, id: uuidv4() };
+      const s = this.getUrlEncodedDemon(demonWithNewId);
+      const url = window.location + `?demon=${s}`;
+      navigator.clipboard.writeText(url)
+        .then(() => {
+          alert("Copied cacodemon link to clipboard");
+        })
+        .catch(() => {
+          alert("Failed to copy a link to the cacodemon");
+        });
+    },
+
     hasLocalStorage() {
       try {
-        const testKey = '__cacodemonomicon_test__';
-        window.localStorage.setItem(testKey, '1');
+        const testKey = "__cacodemonomicon_test__";
+        window.localStorage.setItem(testKey, "1");
         window.localStorage.removeItem(testKey);
         return true;
       } catch (e) {
@@ -203,13 +245,17 @@ Alpine.data(
 
     saveDemon() {
       // Store demon into URL
-      const s = encodeURIComponent(JSON.stringify(this.demon));
+      const s = this.getUrlEncodedDemon(this.demon);
       window.history.pushState(null, "", `?demon=${s}`);
     },
 
     discard() {
       this.demon = undefined;
       window.history.pushState(null, "", window.location.pathname);
+    },
+
+    getUrlEncodedDemon(demon: DemonStats) {
+      return encodeURIComponent(JSON.stringify(demon));
     },
 
     fetchRollCounts() {

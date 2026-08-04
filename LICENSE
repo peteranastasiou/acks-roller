@@ -1,4 +1,34 @@
-MIT License
+
+-------------------------------------------------------------------------
+
+ACKS II CONTENT NOTICE
+
+This software is an unofficial third-party tool for use with the
+Adventurer Conqueror King System Imperial Imprint (ACKS II).
+
+Certain textual results and other game content included in this
+software are derived from and reproduce material from ACKS II,
+published by Autarch LLC.
+
+Such ACKS II-derived material is not licensed under the MIT License
+that applies to the original software code in this repository. It is
+provided pursuant to the applicable Autarch licensing terms and
+permissions.
+
+ACKS, ACKS II, Adventurer Conqueror King System, Adventurer Conqueror
+King System Imperial Imprint, and related trademarks are the property
+of Autarch LLC. No trademark rights are granted by this project.
+
+This project is not affiliated with, endorsed by, or sponsored by
+Autarch LLC unless expressly stated otherwise.
+
+The author of this project claims copyright only in original code and
+other original material contributed to this project, and does not
+claim ownership of material belonging to Autarch LLC.
+
+-------------------------------------------------------------------------
+
+Excluding the content pertaining to ACKS II, the software is MIT Licensed
 
 Copyright (c) 2025 peteranastasiou
 
@@ -19,3 +49,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
